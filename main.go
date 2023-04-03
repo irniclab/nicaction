@@ -4,11 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/irniclab/nicaction/config"
 )
@@ -65,7 +63,7 @@ func main() {
 	}
 
 	// بارگذاری فایل تنظیمات
-	conf, err := config.LoadConfig(*configPath)
+	conf, err := config.LoadConfig(*configFile)
 	if err != nil {
 		log.Fatalf("Error loading config file: %s", err.Error())
 	}
@@ -82,22 +80,16 @@ func main() {
 	if *nicHandleFlag != "" {
 		nicHandle = *nicHandleFlag
 	} else {
-		nicHandle = conf.nichandle
+		nicHandle = conf.Nichandle
 	}
 	domain := strings.ToLower(strings.TrimSpace(*domainFlag))
 	if !strings.HasSuffix(domain, ".ir") {
 		domain = domain + ".ir"
 	}
 
-	ns1 := conf.ns1
-	ns2 := conf.ns2
-	rand.Seed(time.Now().UnixNano())
-	randomNum := rand.Intn(100000)
-	randomStr := fmt.Sprintf("%05d", randomNum)
-	preclTRID := conf.preClTRID + "-" + randomStr
 	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
-	if *showConfig {
-		conf, err := readConfig(*configFile)
+	if *showConfig != "" {
+		conf, err := config.LoadConfig(*configFile)
 		if err != nil {
 			log.Fatalf("Error reading config file: %v", err)
 		}
@@ -112,7 +104,7 @@ func main() {
 	}
 
 	// بررسی و تغییر تنظیمات در صورت وارد شدن پارامتر --config
-	if *configFile {
+	if *configFile != "" {
 		var newValue string
 		switch flag.Arg(1) {
 		case "eppAddress":
@@ -159,14 +151,14 @@ func main() {
 		}
 
 		// ذخیره تغییرات در فایل تنظیمات
-		err = config.SaveConfig(*configPath, conf)
+		err = config.SaveConfig(*configFile, conf)
 		if err != nil {
 			log.Fatalf("Error saving config file: %s", err.Error())
 		}
 	}
 	switch *actionFlag {
 	case "whois":
-		domainAction.registerDomain(domain, nicHandle, period, ns1, ns2, preclTRID, conf.Token)
+		domainAction.whois(domain, conf)
 	default:
 		log.Fatalf("Invalid action parameter. Allowed values: register, renew, delete, transfer, bulkRegister, bulkRenew")
 	}
