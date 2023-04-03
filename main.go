@@ -18,16 +18,16 @@ func main() {
 		log.Fatalf("Error loading config file: %s", err.Error())
 	}
 
-	// چاپ مقادیر فعلی
-	fmt.Printf("Current eppAddress: %s\n", conf.EppAddress)
-	fmt.Printf("Current nichandle: %s\n", conf.Nichandle)
-	fmt.Printf("Current token: %s\n", conf.Token)
-	fmt.Printf("Current ns1: %s\n", conf.Ns1)
-	fmt.Printf("Current ns2: %s\n", conf.Ns2)
-	fmt.Printf("Current pre-clTRID: %s\n", conf.PreClTRID)
-
-	// بررسی و تغییر تنظیمات
+	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --config وارد شده باشد
 	if flag.Arg(0) == "--config" {
+		fmt.Printf("Current eppAddress: %s\n", conf.EppAddress)
+		fmt.Printf("Current nichandle: %s\n", conf.Nichandle)
+		fmt.Printf("Current token: %s\n", conf.Token)
+		fmt.Printf("Current ns1: %s\n", conf.Ns1)
+		fmt.Printf("Current ns2: %s\n", conf.Ns2)
+		fmt.Printf("Current pre-clTRID: %s\n", conf.PreClTRID)
+
+		// بررسی و تغییر تنظیمات
 		var newValue string
 		switch flag.Arg(1) {
 		case "eppAddress":
