@@ -12,7 +12,8 @@ import (
 func main() {
 	configFile = flag.String("config", "config.json", "Config file for nic action")
 	showConfig = flag.Bool("showConfig", false, "Show current config values")
-	defaultPeriod = flag.Int("defaultPeriod", 1, "Default period for pre-registration (in years)")
+	period = flag.Int("period", 1, "period for pre-registration (in years)")
+	nicHandle = flag.String("nicHandle", "", "Nichandle for action.")
 	action = flag.String("action", "", "Action to perform (register, renew, delete, transfer, bulkRegister, bulkRenew)")
 
 	// بارگذاری فایل تنظیمات
