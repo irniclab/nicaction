@@ -10,9 +10,10 @@ import (
 )
 
 func main() {
-	configPath := flag.String("config", "config.json", "Path to the config file")
-	showConfig := flag.String("showConfig", "", "Show application config")
-	flag.Parse()
+	configFile = flag.String("config", "config.json", "Config file for nic action")
+	showConfig = flag.Bool("showConfig", false, "Show current config values")
+	defaultPeriod = flag.Int("defaultPeriod", 1, "Default period for pre-registration (in years)")
+	action = flag.String("action", "", "Action to perform (register, renew, delete, transfer, bulkRegister, bulkRenew)")
 
 	// بارگذاری فایل تنظیمات
 	conf, err := config.LoadConfig(*configPath)
@@ -23,18 +24,22 @@ func main() {
 	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
 	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
 	if *showConfig {
+		conf, err := readConfig(*configFile)
+		if err != nil {
+			log.Fatalf("Error reading config file: %v", err)
+		}
 		fmt.Printf("Current eppAddress: %s\n", conf.EppAddress)
 		fmt.Printf("Current nichandle: %s\n", conf.Nichandle)
 		fmt.Printf("Current token: %s\n", conf.Token)
 		fmt.Printf("Current ns1: %s\n", conf.Ns1)
 		fmt.Printf("Current ns2: %s\n", conf.Ns2)
 		fmt.Printf("Current pre-clTRID: %s\n", conf.PreClTRID)
-		fmt.Printf("Default period for pre-registration: %d years\n", conf.DefaultPeriod)
-		return // اجرای برنامه را به اتمام برسانید
+		fmt.Printf("Current defaultPeriod: %d\n", conf.DefaultPeriod)
+		return
 	}
 
 	// بررسی و تغییر تنظیمات در صورت وارد شدن پارامتر --config
-	if flag.Arg(0) == "--config" {
+	if *configFile {
 		var newValue string
 		switch flag.Arg(1) {
 		case "eppAddress":
@@ -85,41 +90,22 @@ func main() {
 		if err != nil {
 			log.Fatalf("Error saving config file: %s", err.Error())
 		}
-	} else if flag.Arg(0) == "--action" {
-		switch action {
-		case "register":
-			// در اینجا برای عملیات register کد خود را قرار دهید
-			fmt.Println("Register operation")
-		case "renew":
-			// در اینجا برای عملیات renew کد خود را قرار دهید
-			fmt.Println("Renew operation")
-		case "delete":
-			// در اینجا برای عملیات delete کد خود را قرار دهید
-			fmt.Println("Delete operation")
-		case "transfer":
-			// در اینجا برای عملیات transfer کد خود را قرار دهید
-			fmt.Println("Transfer operation")
-		case "bulkRegister":
-			// در اینجا برای عملیات bulkRegister کد خود را قرار دهید
-			fmt.Println("Bulk register operation")
-		case "bulkRenew":
-			// در اینجا برای عملیات bulkRenew کد خود را قرار دهید
-			fmt.Println("Bulk renew operation")
-		case "help":
-			// نمایش راهنمایی پارامترها
-			fmt.Println("Available actions:")
-			fmt.Println("- register")
-			fmt.Println("- renew")
-			fmt.Println("- delete")
-			fmt.Println("- transfer")
-			fmt.Println("- bulkRegister")
-			fmt.Println("- bulkRenew")
-			fmt.Println("- help")
-		default:
-			// پارامتر اشتباه وارد شده است، خطا نمایش داده شود
-			fmt.Println("Invalid action parameter. Allowed parameters: register, renew, delete, transfer, bulkRegister, bulkRenew, help")
-			return
-		}
+	}
+	switch *action {
+	case "register":
+		registerDomain(config)
+	case "renew":
+		renewDomain(config)
+	case "delete":
+		deleteDomain(config)
+	case "transfer":
+		transferDomain(config)
+	case "bulkRegister":
+		bulkRegister(config, *defaultPeriod)
+	case "bulkRenew":
+		bulkRenew(config, *defaultPeriod)
+	default:
+		log.Fatalf("Invalid action parameter. Allowed values: register, renew, delete, transfer, bulkRegister, bulkRenew")
 	}
 }
 
