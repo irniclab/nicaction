@@ -22,6 +22,7 @@ func main() {
 
 	var (
 		actionFlag    = flag.String("action", "", "the action to perform")
+		domainFlag    = flag.String("domain", "", "the domain to perform")
 		periodFlag    = flag.Int("period", 0, "the period of the domain (required for 'register' action)")
 		nicHandleFlag = flag.String("nichandle", "", "the nicHandle for the domain (required for 'register' action)")
 		configFile    = flag.String("config", "", "path to config file")
@@ -37,6 +38,11 @@ func main() {
 	if *actionFlag == "" && *nicHandleFlag != "" {
 		flag.Usage()
 		log.Fatal("action flag is required for 'nicHandleFlag'")
+	}
+
+	if *actionFlag == "" && *domainFlag != "" {
+		flag.Usage()
+		log.Fatal("action flag is required for 'domainFlag'")
 	}
 
 	if (*actionFlag != "register" && *actionFlag != "renew" && *actionFlag != "bulkRegister" && *actionFlag != "bulkRenew") && *periodFlag != 0 {
