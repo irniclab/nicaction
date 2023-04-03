@@ -155,9 +155,10 @@ func main() {
 			log.Fatalf("Error saving config file: %s", err.Error())
 		}
 	}
+
 	switch *action {
 	case "register":
-		registerDomain(config)
+		domainAction.registerDomain(config)
 	case "renew":
 		renewDomain(config)
 	case "delete":
