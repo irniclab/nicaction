@@ -10,6 +10,7 @@ import (
 
 func main() {
 	configPath := flag.String("config", "config.json", "Path to the config file")
+	showConfig := flag.String("showConfig", "", "Show application config")
 	flag.Parse()
 
 	// بارگذاری فایل تنظیمات
