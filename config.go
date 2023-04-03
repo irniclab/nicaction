@@ -5,21 +5,44 @@ import (
 	"io/ioutil"
 )
 
+// Config ساختار تنظیمات نیک
 type Config struct {
-	// فیلدهای مورد نیاز برای تنظیمات
+	EppAddress string `json:"eppAddress"`
+	Nichandle  string `json:"nichandle"`
+	Token      string `json:"token"`
+	Ns1        string `json:"ns1"`
+	Ns2        string `json:"ns2"`
+	PreClTRID  string `json:"preClTRID"`
 }
 
-func LoadConfig(configFilePath string) (*Config, error) {
-	config := &Config{}
+// LoadConfig بارگذاری تنظیمات از فایل
+func LoadConfig(path string) (Config, error) {
+	var conf Config
 
-	// خواندن فایل تنظیمات و تبدیل آن به یک شیء Config
-	configFile, err := ioutil.ReadFile(configFilePath)
+	bytes, err := ioutil.ReadFile(path)
 	if err != nil {
-		return nil, err
-	}
-	if err := json.Unmarshal(configFile, config); err != nil {
-		return nil, err
+		return conf, err
 	}
 
-	return config, nil
+	err = json.Unmarshal(bytes, &conf)
+	if err != nil {
+		return conf, err
+	}
+
+	return conf, nil
+}
+
+// SaveConfig ذخیره تغییرات تنظیمات در فایل
+func SaveConfig(path string, conf Config) error {
+	bytes, err := json.MarshalIndent(conf, "", "    ")
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(path, bytes, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
