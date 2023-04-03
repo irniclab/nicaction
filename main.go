@@ -3,16 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/irniclab/nicaction/config"
+	"github.com/irniclab/nicaction/domainAction"
 	"log"
 	"math/rand"
 	"os"
 	"strconv"
 	"strings"
 	"time"
-"github.com/irniclab/nicaction/domainAction"
-	"github.com/irniclab/nicaction/config"
 )
-
 var period int = 0
 var nicHandle = ""
 
