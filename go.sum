@@ -1,0 +1,4 @@
+github.com/irniclab/nicaction/config v0.0.0-20230403103433-78fa375573d6 h1:eN1V5RdqUv56aX+6wIPKpvoGew5BbPQ6eRnLZklxcjM=
+github.com/irniclab/nicaction/config v0.0.0-20230403103433-78fa375573d6/go.mod h1:ZhNqc3HjssGutvFpgSEd9S4WLSLRqsytQrZGofvFEl8=
+github.com/irniclab/nicaction/domainAction v0.0.0-20230403103433-78fa375573d6 h1:jlkRbQwGGItuJOjLL/S11awb7Vki2xYWgDtHdndDXjY=
+github.com/irniclab/nicaction/domainAction v0.0.0-20230403103433-78fa375573d6/go.mod h1:22ZM6OHkgLPjKWldRa2yawsX2NOaF26ukpQYsEzBO54=
