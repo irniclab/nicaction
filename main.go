@@ -4,9 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/irniclab/nicaction/config"
 )
@@ -86,6 +88,13 @@ func main() {
 	if !strings.HasSuffix(domain, ".ir") {
 		domain = domain + ".ir"
 	}
+
+	ns1 := conf.ns1
+	ns2 := conf.ns2
+	rand.Seed(time.Now().UnixNano())
+	randomNum := rand.Intn(100000)
+	randomStr := fmt.Sprintf("%05d", randomNum)
+	preclTRID := conf.preClTRID + "-" + randomStr
 	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
 	if *showConfig {
 		conf, err := readConfig(*configFile)
@@ -155,20 +164,9 @@ func main() {
 			log.Fatalf("Error saving config file: %s", err.Error())
 		}
 	}
-
-	switch *action {
+	switch *actionFlag {
 	case "register":
-		domainAction.registerDomain(config)
-	case "renew":
-		renewDomain(config)
-	case "delete":
-		deleteDomain(config)
-	case "transfer":
-		transferDomain(config)
-	case "bulkRegister":
-		bulkRegister(config, *defaultPeriod)
-	case "bulkRenew":
-		bulkRenew(config, *defaultPeriod)
+		domainAction.registerDomain(domain, nicHandle, period, ns1, ns2, preclTRID, conf.Token)
 	default:
 		log.Fatalf("Invalid action parameter. Allowed values: register, renew, delete, transfer, bulkRegister, bulkRenew")
 	}
