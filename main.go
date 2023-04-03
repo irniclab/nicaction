@@ -4,17 +4,47 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 
 	"github.com/irniclab/nicaction/config"
 )
 
 func main() {
-	configFile = flag.String("config", "config.json", "Config file for nic action")
-	showConfig = flag.Bool("showConfig", false, "Show current config values")
-	period = flag.Int("period", 1, "period for pre-registration (in years)")
-	nicHandle = flag.String("nicHandle", "", "Nichandle for action.")
-	action = flag.String("action", "", "Action to perform (register, renew, delete, transfer, bulkRegister, bulkRenew)")
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "\nOptions:\n")
+		flag.PrintDefaults()
+	}
+
+	var (
+		actionFlag    = flag.String("action", "", "the action to perform")
+		periodFlag    = flag.Int("period", 0, "the period of the domain (required for 'register' action)")
+		nicHandleFlag = flag.String("nichandle", "", "the nicHandle for the domain (required for 'register' action)")
+		configFile    = flag.String("config", "", "path to config file")
+	)
+
+	flag.Parse()
+
+	if *actionFlag == "" && *periodFlag != 0 {
+		flag.Usage()
+		log.Fatal("action flag is required for 'periodFlag'")
+	}
+
+	if *actionFlag == "" && *nicHandleFlag != "" {
+		flag.Usage()
+		log.Fatal("action flag is required for 'nicHandleFlag'")
+	}
+
+	if (*actionFlag != "register" && *actionFlag != "renew" && *actionFlag != "bulkRegister" && *actionFlag != "bulkRenew") && *periodFlag != 0 {
+		flag.Usage()
+		log.Fatal("'periodFlag' only avialable for action register or renew or bulkRegister or bulkRenew")
+	}
+
+	if (*actionFlag != "register" && *actionFlag != "bulkRegister" && *actionFlag != "transfer") && *nicHandleFlag != "" {
+		flag.Usage()
+		log.Fatal("'periodFlag' only avialable for action register or renew or bulkRegister or bulkRenew")
+	}
 
 	// بارگذاری فایل تنظیمات
 	conf, err := config.LoadConfig(*configPath)
