@@ -10,6 +10,7 @@ type Config struct {
 	EppAddress    string `json:"eppAddress"`
 	Nichandle     string `json:"nichandle"`
 	Token         string `json:"token"`
+	AuthCode      string `json:"authCode"`
 	Ns1           string `json:"ns1"`
 	Ns2           string `json:"ns2"`
 	PreClTRID     string `json:"preClTRID"`

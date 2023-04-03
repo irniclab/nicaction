@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
+	"github.com/irniclab/nicaction/domainAction"
 	"github.com/irniclab/nicaction/config"
 )
 
@@ -121,6 +121,11 @@ func main() {
 			newValue = readInput(fmt.Sprintf("Enter new token (%s): ", conf.Token))
 			if newValue != "" {
 				conf.Token = newValue
+			}
+		case "authCode":
+			newValue = readInput(fmt.Sprintf("Enter new authCode (%s): ", conf.AuthCode))
+			if newValue != "" {
+				conf.AuthCode = newValue
 			}
 		case "ns1":
 			newValue = readInput(fmt.Sprintf("Enter new ns1 (%s): ", conf.Ns1))

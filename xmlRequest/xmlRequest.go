@@ -15,12 +15,15 @@ func domainWhoisXml(domain string, config config.Config) string {
                     <info>
                         <domain:info xmlns:domain="%s/ns/domain-1.0">
                             <domain:name>%s</domain:name>
+							<domain:authInfo>
+ 								<domain:pw>%s</domain:pw>
+ 							</domain:authInfo>
                         </domain:info>
                     </info>
                     <clTRID>%s</clTRID>
                 </command>
             </epp>`
-	return fmt.Sprintf(xml, config.EppAddress, domain, getPreClTRID(config))
+	return fmt.Sprintf(xml, config.EppAddress, domain, config.AuthCode, getPreClTRID(config))
 }
 
 func getPreClTRID(config config.Config) string {
