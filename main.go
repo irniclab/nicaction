@@ -10,6 +10,8 @@ import (
 	"github.com/irniclab/nicaction/config"
 )
 
+var period int = 0
+
 func main() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n", os.Args[0])
@@ -46,13 +48,26 @@ func main() {
 		log.Fatal("'periodFlag' only avialable for action register or renew or bulkRegister or bulkRenew")
 	}
 
+	if *periodFlag != 0 && *periodFlag != 1 && *periodFlag != 5 {
+		flag.Usage()
+		log.Fatal("period flag value must be either 1 or 5")
+	}
+
 	// بارگذاری فایل تنظیمات
 	conf, err := config.LoadConfig(*configPath)
 	if err != nil {
 		log.Fatalf("Error loading config file: %s", err.Error())
 	}
 
-	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
+	if *periodFlag != 0 {
+		period = *periodFlag
+	} else {
+		period = conf.DefaultPeriod
+	}
+
+	// Period changed from year to month
+	period = period * 12
+
 	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
 	if *showConfig {
 		conf, err := readConfig(*configFile)
