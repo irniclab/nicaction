@@ -19,16 +19,20 @@ func main() {
 		log.Fatalf("Error loading config file: %s", err.Error())
 	}
 
-	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --config وارد شده باشد
-	if flag.Arg(0) == "--config" {
+	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
+	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
+	if *showConfig {
 		fmt.Printf("Current eppAddress: %s\n", conf.EppAddress)
 		fmt.Printf("Current nichandle: %s\n", conf.Nichandle)
 		fmt.Printf("Current token: %s\n", conf.Token)
 		fmt.Printf("Current ns1: %s\n", conf.Ns1)
 		fmt.Printf("Current ns2: %s\n", conf.Ns2)
 		fmt.Printf("Current pre-clTRID: %s\n", conf.PreClTRID)
+		return // اجرای برنامه را به اتمام برسانید
+	}
 
-		// بررسی و تغییر تنظیمات
+	// بررسی و تغییر تنظیمات در صورت وارد شدن پارامتر --config
+	if flag.Arg(0) == "--config" {
 		var newValue string
 		switch flag.Arg(1) {
 		case "eppAddress":
