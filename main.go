@@ -11,6 +11,7 @@ import (
 )
 
 var period int = 0
+var nicHandle = ""
 
 func main() {
 	flag.Usage = func() {
@@ -67,6 +68,12 @@ func main() {
 
 	// Period changed from year to month
 	period = period * 12
+
+	if *nicHandleFlag != "" {
+		nicHandle = *nicHandleFlag
+	} else {
+		nicHandle = conf.nichandle
+	}
 
 	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
 	if *showConfig {
