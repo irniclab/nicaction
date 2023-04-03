@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/irniclab/nicaction/config"
 )
@@ -28,6 +29,7 @@ func main() {
 		fmt.Printf("Current ns1: %s\n", conf.Ns1)
 		fmt.Printf("Current ns2: %s\n", conf.Ns2)
 		fmt.Printf("Current pre-clTRID: %s\n", conf.PreClTRID)
+		fmt.Printf("Default period for pre-registration: %d years\n", conf.DefaultPeriod)
 		return // اجرای برنامه را به اتمام برسانید
 	}
 
@@ -64,6 +66,16 @@ func main() {
 			newValue = readInput(fmt.Sprintf("Enter new pre-clTRID (%s): ", conf.PreClTRID))
 			if newValue != "" {
 				conf.PreClTRID = newValue
+			}
+		case "defaultPeriod":
+			newValue = readInput(fmt.Sprintf("Enter new defaultPeriod (%d): ", conf.DefaultPeriod))
+			if newValue != "" {
+				var err error
+				*defaultPeriod, err = strconv.Atoi(newValue)
+				if err != nil {
+					log.Fatalf("Invalid input: %s", err.Error())
+				}
+				conf.DefaultPeriod = *defaultPeriod
 			}
 		default:
 			log.Fatal("Invalid config option")

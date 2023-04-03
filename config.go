@@ -7,12 +7,13 @@ import (
 
 // Config ساختار تنظیمات نیک
 type Config struct {
-	EppAddress string `json:"eppAddress"`
-	Nichandle  string `json:"nichandle"`
-	Token      string `json:"token"`
-	Ns1        string `json:"ns1"`
-	Ns2        string `json:"ns2"`
-	PreClTRID  string `json:"preClTRID"`
+	EppAddress    string `json:"eppAddress"`
+	Nichandle     string `json:"nichandle"`
+	Token         string `json:"token"`
+	Ns1           string `json:"ns1"`
+	Ns2           string `json:"ns2"`
+	PreClTRID     string `json:"preClTRID"`
+	DefaultPeriod int    `json:"defaultPeriod"`
 }
 
 // LoadConfig بارگذاری تنظیمات از فایل
