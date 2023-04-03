@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/irniclab/nicaction/config"
 )
@@ -26,6 +27,7 @@ func main() {
 		periodFlag    = flag.Int("period", 0, "the period of the domain (required for 'register' action)")
 		nicHandleFlag = flag.String("nichandle", "", "the nicHandle for the domain (required for 'register' action)")
 		configFile    = flag.String("config", "", "path to config file")
+		showConfig    = flag.String("showConfig", "", "Show config")
 	)
 
 	flag.Parse()
@@ -80,7 +82,10 @@ func main() {
 	} else {
 		nicHandle = conf.nichandle
 	}
-
+	domain := strings.ToLower(strings.TrimSpace(*domainFlag))
+	if !strings.HasSuffix(domain, ".ir") {
+		domain = domain + ".ir"
+	}
 	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
 	if *showConfig {
 		conf, err := readConfig(*configFile)
