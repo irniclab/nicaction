@@ -3,15 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/irniclab/nicaction/config"
-	"github.com/irniclab/nicaction/domainAction"
 	"log"
 	"math/rand"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/irniclab/nicaction/config"
 )
+
 var period int = 0
 var nicHandle = ""
 
@@ -164,7 +165,7 @@ func main() {
 		}
 	}
 	switch *actionFlag {
-	case "register":
+	case "whois":
 		domainAction.registerDomain(domain, nicHandle, period, ns1, ns2, preclTRID, conf.Token)
 	default:
 		log.Fatalf("Invalid action parameter. Allowed values: register, renew, delete, transfer, bulkRegister, bulkRenew")
