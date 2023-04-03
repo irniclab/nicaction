@@ -85,6 +85,41 @@ func main() {
 		if err != nil {
 			log.Fatalf("Error saving config file: %s", err.Error())
 		}
+	} else if flag.Arg(0) == "--action" {
+		switch action {
+		case "register":
+			// در اینجا برای عملیات register کد خود را قرار دهید
+			fmt.Println("Register operation")
+		case "renew":
+			// در اینجا برای عملیات renew کد خود را قرار دهید
+			fmt.Println("Renew operation")
+		case "delete":
+			// در اینجا برای عملیات delete کد خود را قرار دهید
+			fmt.Println("Delete operation")
+		case "transfer":
+			// در اینجا برای عملیات transfer کد خود را قرار دهید
+			fmt.Println("Transfer operation")
+		case "bulkRegister":
+			// در اینجا برای عملیات bulkRegister کد خود را قرار دهید
+			fmt.Println("Bulk register operation")
+		case "bulkRenew":
+			// در اینجا برای عملیات bulkRenew کد خود را قرار دهید
+			fmt.Println("Bulk renew operation")
+		case "help":
+			// نمایش راهنمایی پارامترها
+			fmt.Println("Available actions:")
+			fmt.Println("- register")
+			fmt.Println("- renew")
+			fmt.Println("- delete")
+			fmt.Println("- transfer")
+			fmt.Println("- bulkRegister")
+			fmt.Println("- bulkRenew")
+			fmt.Println("- help")
+		default:
+			// پارامتر اشتباه وارد شده است، خطا نمایش داده شود
+			fmt.Println("Invalid action parameter. Allowed parameters: register, renew, delete, transfer, bulkRegister, bulkRenew, help")
+			return
+		}
 	}
 }
 
