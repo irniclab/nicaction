@@ -71,11 +71,10 @@ func main() {
 			newValue = readInput(fmt.Sprintf("Enter new defaultPeriod (%d): ", conf.DefaultPeriod))
 			if newValue != "" {
 				var err error
-				*defaultPeriod, err = strconv.Atoi(newValue)
+				conf.DefaultPeriod, err = strconv.Atoi(newValue)
 				if err != nil {
 					log.Fatalf("Invalid input: %s", err.Error())
 				}
-				conf.DefaultPeriod = *defaultPeriod
 			}
 		default:
 			log.Fatal("Invalid config option")
