@@ -1,12 +1,25 @@
 package xmlRequest
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"math/rand"
+	"net/http"
 	"time"
 
 	"github.com/irniclab/nicaction/config"
 )
+
+type domainType struct {
+	ExpDate time.Time
+	Domain  string
+	holder  string
+	ns1     string
+	ns2     string
+	ns3     string
+	ns4     string
+}
 
 func domainWhoisXml(domain string, config config.Config) string {
 	xml := `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -31,4 +44,29 @@ func getPreClTRID(config config.Config) string {
 	randomNum := rand.Intn(100000)
 	randomStr := fmt.Sprintf("%05d", randomNum)
 	return config.PreClTRID + "-" + randomStr
+}
+
+func sendXml(xml, address, token string) (string, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", address, bytes.NewBufferString(xml))
+	if err != nil {
+		return "", err
+	}
+
+	req.Header.Add("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/xml")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+
+	defer resp.Body.Close()
+
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(bodyBytes), nil
 }
