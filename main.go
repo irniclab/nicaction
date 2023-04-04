@@ -150,15 +150,17 @@ func main() {
 			log.Fatalf("Error saving config file: %s", err.Error())
 		}
 	}
-	switch *actionFlag {
-	case "whois":
-		res, err := domainAction.Whois(domain, conf)
-		if err != nil {
-			log.Fatalf("Error is : %s", err.Error())
+	if *configFile == "" {
+		switch *actionFlag {
+		case "whois":
+			res, err := domainAction.Whois(domain, conf)
+			if err != nil {
+				log.Fatalf("Error is : %s", err.Error())
+			}
+			log.Printf("Result is %s ", res)
+		default:
+			log.Fatalf("Invalid action parameter. Allowed values: register, renew, delete, transfer, bulkRegister, bulkRenew")
 		}
-		log.Printf("Result is %s ", res)
-	default:
-		log.Fatalf("Invalid action parameter. Allowed values: register, renew, delete, transfer, bulkRegister, bulkRenew")
 	}
 }
 
