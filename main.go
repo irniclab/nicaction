@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/irniclab/nicaction/config"
+	"github.com/irniclab/nicaction/domainAction"
 	"log"
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/irniclab/nicaction/config"
 )
 
 var period int = 0
@@ -102,6 +102,8 @@ func main() {
 		fmt.Printf("Current defaultPeriod: %d\n", conf.DefaultPeriod)
 		return
 	}
+
+	fmt.Printf("a is : %d\n", domainAction.a)
 
 	// بررسی و تغییر تنظیمات در صورت وارد شدن پارامتر --config
 	if *configFile != "" {
