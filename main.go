@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/irniclab/nicaction/config"
-	"github.com/irniclab/nicaction/domainAction"
 	"log"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/irniclab/nicaction/config"
 )
 
 var period int = 0
