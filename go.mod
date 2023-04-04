@@ -12,4 +12,4 @@ replace github.com/irniclab/nicaction/config => ./config
 
 replace github.com/irniclab/nicaction/domainAction => ./domainAction
 
-replace github.com/irniclab/nicaction/domainAction => ./types
+replace github.com/irniclab/nicaction/types => ./types
