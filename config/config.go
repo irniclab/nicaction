@@ -8,7 +8,7 @@ import (
 	"github.com/irniclab/nicaction/types"
 )
 
-func generateConfigFile(path string) error {
+func generateConfigFile(path string) {
 	defaultConfig := types.Config{
 		EppAddress:    "https://epp.nic.ir",
 		Nichandle:     "rb994-irnic",
