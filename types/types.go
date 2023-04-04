@@ -2,8 +2,10 @@ package types
 
 import "time"
 
-type domainType struct {
+type DomainType struct {
 	ExpDate      time.Time
+	CreateDate   time.Time
+	UpdateDate   time.Time
 	LastUpdate   time.Time
 	LockDate     time.Time
 	ReleaseDate  time.Time
