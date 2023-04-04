@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/irniclab/nicaction/config"
+	"github.com/irniclab/nicaction/domainAction"
 )
 
 var period int = 0
@@ -102,7 +103,6 @@ func main() {
 		fmt.Printf("Current defaultPeriod: %d\n", conf.DefaultPeriod)
 		return
 	}
-
 	fmt.Printf("a is : %d\n", domainAction.a)
 
 	// بررسی و تغییر تنظیمات در صورت وارد شدن پارامتر --config
@@ -165,7 +165,7 @@ func main() {
 	}
 	switch *actionFlag {
 	case "whois":
-		domainAction.whois(domain, conf)
+		res, err := domainAction.Whois(domain, conf)
 	default:
 		log.Fatalf("Invalid action parameter. Allowed values: register, renew, delete, transfer, bulkRegister, bulkRenew")
 	}

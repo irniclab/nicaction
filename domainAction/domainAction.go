@@ -12,7 +12,7 @@ func registerDomain(domain string, nicHanle string, period int, ns1 string, ns2 
 	return true, nil
 }
 
-func whois(domain string, conf types.Config) (string, error) {
+func Whois(domain string, conf types.Config) (string, error) {
 	fmt.Print("Whois domain : " + domain)
 	return "", nil
 }
