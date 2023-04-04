@@ -53,6 +53,25 @@ func domainWhoisXml(domain string, config types.Config) string {
 	return fmt.Sprintf(xml, config.EppAddress, domain, config.AuthCode, getPreClTRID(config))
 }
 
+func DomainRenewXml(domain string, expDate string, period int, config types.Config) string {
+	xml := `<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+				<command>
+					<renew>
+						<domain:renew xmlns:domain="http://epp.nic.ir/ns/domain-1.0">
+							<domain:name>%s</domain:name>
+							<domain:curExpDate>%s</domain:curExpDate>
+							<domain:period unit="m">%d</domain:period>
+							<domain:authInfo>
+								<domain:pw>%s</domain:pw>
+							</domain:authInfo>
+						</domain:renew>
+					</renew>
+					<clTRID>%s</clTRID>
+				</command>
+   			</epp>`
+	return fmt.Sprintf(xml, domain, expDate, config.AuthCode, getPreClTRID(config))
+}
+
 func getPreClTRID(config types.Config) string {
 	rand.Seed(time.Now().UnixNano())
 	randomNum := rand.Intn(100000)
