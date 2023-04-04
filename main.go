@@ -153,7 +153,7 @@ func main() {
 				}
 			}
 		default:
-			log.Fatal("Invalid config option")
+			log.Fatalf("Invalid config option %s ", flag.Arg(1))
 		}
 
 		// ذخیره تغییرات در فایل تنظیمات
