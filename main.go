@@ -103,7 +103,6 @@ func main() {
 		fmt.Printf("Current defaultPeriod: %d\n", conf.DefaultPeriod)
 		return
 	}
-	fmt.Printf("a is : %d\n", domainAction.a)
 
 	// بررسی و تغییر تنظیمات در صورت وارد شدن پارامتر --config
 	if *configFile != "" {
@@ -166,6 +165,10 @@ func main() {
 	switch *actionFlag {
 	case "whois":
 		res, err := domainAction.Whois(domain, conf)
+		if err != nil {
+			log.Fatalf("Error is : %s", err.Error())
+		}
+		log.Printf("Result is %s ", res)
 	default:
 		log.Fatalf("Invalid action parameter. Allowed values: register, renew, delete, transfer, bulkRegister, bulkRenew")
 	}
