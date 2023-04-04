@@ -14,39 +14,20 @@ import (
 	"github.com/irniclab/nicaction/types"
 )
 
-type hostName struct {
-	HostName string `xml:"hostName"`
-}
-
-type hostAttr struct {
-	HostNames []hostName `xml:"hostName"`
-}
-
-type ns struct {
-	HostAttrs []hostAttr `xml:"hostAttr"`
-}
-
-type infData struct {
-	Name     string `xml:"name"`
+type domainInfo struct {
+	Name     string `xml:"infData>name"`
 	Statuses []struct {
 		Value string `xml:"s,attr"`
-	} `xml:"status"`
+	} `xml:"infData>status"`
 	Contacts []struct {
 		Type  string `xml:"type,attr"`
 		Value string `xml:",chardata"`
-	} `xml:"contact"`
-	Ns     ns     `xml:"ns"`
-	CrDate string `xml:"crDate"`
-	UpDate string `xml:"upDate"`
-	ExDate string `xml:"exDate"`
-}
-
-type resData struct {
-	InfData infData `xml:"infData"`
-}
-
-type response struct {
-	ResData resData `xml:"resData"`
+	} `xml:"infData>contact"`
+	Ns     []string `xml:"infData>ns>hostAttr>hostName"`
+	CrDate string   `xml:"infData>crDate"`
+	UpDate string   `xml:"infData>upDate"`
+	ExDate string   `xml:"infData>exDate"`
+	Holder string   `xml:"infData>contact[type=holder]"`
 }
 
 func domainWhoisXml(domain string, config types.Config) string {
@@ -99,45 +80,62 @@ func sendXml(xml, address, token string) (string, error) {
 	return string(bodyBytes), nil
 }
 
-func parseDomainType(xmlContent string) (*types.DomainType, error) {
-	d := &types.DomainType{}
-	var resp response
-	if err := xml.Unmarshal([]byte(xmlContent), &resp); err != nil {
+func parseDomainّInfoType(xmlContent string) (*types.DomainType, error) {
+	var di domainInfo
+	if err := xml.Unmarshal([]byte(xmlContent), &di); err != nil {
 		return nil, err
 	}
 
-	d.Domain = resp.ResData.InfData.Name
-	d.Holder = resp.ResData.InfData.Contacts[0].Value
-	for _, status := range resp.ResData.InfData.Statuses {
-		d.DomainStatus = append(d.DomainStatus, status.Value)
+	d := &types.DomainType{
+		Domain:       di.Name,
+		Holder:       di.Holder,
+		DomainStatus: make([]string, len(di.Statuses)),
+		Ns1:          "",
+		Ns2:          "",
+		Ns3:          "",
+		Ns4:          "",
+		ExpDate:      time.Time{},
+		CreateDate:   time.Time{},
+		UpdateDate:   time.Time{},
 	}
 
-	for _, hostAttr := range resp.ResData.InfData.Ns.HostAttrs {
-		for _, hostName := range hostAttr.HostNames {
-			if len(d.Ns1) == 0 {
-				d.Ns1 = hostName.HostName
-			} else if len(d.Ns2) == 0 {
-				d.Ns2 = hostName.HostName
-			} else if len(d.Ns3) == 0 {
-				d.Ns3 = hostName.HostName
-			} else if len(d.Ns4) == 0 {
-				d.Ns4 = hostName.HostName
-			}
+	copy(d.DomainStatus, func() []string {
+		s := make([]string, len(di.Statuses))
+		for i := range s {
+			s[i] = di.Statuses[i].Value
 		}
+		return s
+	}())
+
+	if len(di.Ns) > 0 {
+		d.Ns1 = di.Ns[0]
+	}
+	if len(di.Ns) > 1 {
+		d.Ns2 = di.Ns[1]
+	}
+	if len(di.Ns) > 2 {
+		d.Ns3 = di.Ns[2]
+	}
+	if len(di.Ns) > 3 {
+		d.Ns4 = di.Ns[3]
 	}
 
-	if t, err := time.Parse("2006-01-02T15:04:05", resp.ResData.InfData.ExDate); err == nil {
+	if t, err := time.Parse("2006-01-02T15:04:05", di.ExDate); err == nil {
 		d.ExpDate = t
 	}
-	if t, err := time.Parse("2006-01-02T15:04:05", resp.ResData.InfData.CrDate); err == nil {
+	if t, err := time.Parse("2006-01-02T15:04:05", di.CrDate); err == nil {
 		d.CreateDate = t
 	}
-	if t, err := time.Parse("2006-01-02T15:04:05", resp.ResData.InfData.UpDate); err == nil {
+	if t, err := time.Parse("2006-01-02T15:04:05", di.UpDate); err == nil {
 		d.UpdateDate = t
 	}
 
 	return d, nil
 }
+
+
+
+
 
 func formatDateString(t time.Time) string {
 	return t.Format("2006-01-02")
