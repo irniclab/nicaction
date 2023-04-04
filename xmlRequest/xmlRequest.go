@@ -3,6 +3,7 @@ package xmlRequest
 import (
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -28,6 +29,10 @@ type domainInfo struct {
 	UpDate string   `xml:"infData>upDate"`
 	ExDate string   `xml:"infData>exDate"`
 	Holder string   `xml:"infData>contact[type=holder]"`
+	Result struct {
+		Code string `xml:"code,attr"`
+		Msg  string `xml:"msg"`
+	} `xml:"result"`
 }
 
 func domainWhoisXml(domain string, config types.Config) string {
@@ -80,10 +85,14 @@ func sendXml(xml, address, token string) (string, error) {
 	return string(bodyBytes), nil
 }
 
-func parseDomainّInfoType(xmlContent string) (*types.DomainType, error) {
+func parseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	var di domainInfo
 	if err := xml.Unmarshal([]byte(xmlContent), &di); err != nil {
 		return nil, err
+	}
+
+	if di.Result.Code == "2502" {
+		return nil, errors.New("Session limit exceeded; server closing connection")
 	}
 
 	d := &types.DomainType{
@@ -132,10 +141,6 @@ func parseDomainّInfoType(xmlContent string) (*types.DomainType, error) {
 
 	return d, nil
 }
-
-
-
-
 
 func formatDateString(t time.Time) string {
 	return t.Format("2006-01-02")
