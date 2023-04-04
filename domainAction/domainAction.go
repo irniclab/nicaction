@@ -1,8 +1,10 @@
 package domainAction
-import {
-	"github.com/irniclab/nicaction/xmlRequest"
+
+import (
+	"fmt"
+
 	"github.com/irniclab/nicaction/types"
-}
+)
 
 var a = 1
 
