@@ -107,53 +107,41 @@ func main() {
 	// بررسی و تغییر تنظیمات در صورت وارد شدن پارامتر --config
 	if *configFile != "" {
 		var newValue string
-		switch flag.Arg(1) {
-		case "eppAddress":
-			newValue = readInput(fmt.Sprintf("Enter new eppAddress (%s): ", conf.EppAddress))
-			if newValue != "" {
-				conf.EppAddress = newValue
+		newValue = readInput(fmt.Sprintf("Enter new eppAddress (%s): ", conf.EppAddress))
+		if newValue != "" {
+			conf.EppAddress = newValue
+		}
+		newValue = readInput(fmt.Sprintf("Enter new nichandle (%s): ", conf.Nichandle))
+		if newValue != "" {
+			conf.Nichandle = newValue
+		}
+		newValue = readInput(fmt.Sprintf("Enter new token (%s): ", conf.Token))
+		if newValue != "" {
+			conf.Token = newValue
+		}
+		newValue = readInput(fmt.Sprintf("Enter new authCode (%s): ", conf.AuthCode))
+		if newValue != "" {
+			conf.AuthCode = newValue
+		}
+		newValue = readInput(fmt.Sprintf("Enter new ns1 (%s): ", conf.Ns1))
+		if newValue != "" {
+			conf.Ns1 = newValue
+		}
+		newValue = readInput(fmt.Sprintf("Enter new ns2 (%s): ", conf.Ns2))
+		if newValue != "" {
+			conf.Ns2 = newValue
+		}
+		newValue = readInput(fmt.Sprintf("Enter new pre-clTRID (%s): ", conf.PreClTRID))
+		if newValue != "" {
+			conf.PreClTRID = newValue
+		}
+		newValue = readInput(fmt.Sprintf("Enter new defaultPeriod (%d): ", conf.DefaultPeriod))
+		if newValue != "" {
+			var err error
+			conf.DefaultPeriod, err = strconv.Atoi(newValue)
+			if err != nil {
+				log.Fatalf("Invalid input: %s", err.Error())
 			}
-		case "nichandle":
-			newValue = readInput(fmt.Sprintf("Enter new nichandle (%s): ", conf.Nichandle))
-			if newValue != "" {
-				conf.Nichandle = newValue
-			}
-		case "token":
-			newValue = readInput(fmt.Sprintf("Enter new token (%s): ", conf.Token))
-			if newValue != "" {
-				conf.Token = newValue
-			}
-		case "authCode":
-			newValue = readInput(fmt.Sprintf("Enter new authCode (%s): ", conf.AuthCode))
-			if newValue != "" {
-				conf.AuthCode = newValue
-			}
-		case "ns1":
-			newValue = readInput(fmt.Sprintf("Enter new ns1 (%s): ", conf.Ns1))
-			if newValue != "" {
-				conf.Ns1 = newValue
-			}
-		case "ns2":
-			newValue = readInput(fmt.Sprintf("Enter new ns2 (%s): ", conf.Ns2))
-			if newValue != "" {
-				conf.Ns2 = newValue
-			}
-		case "pre-clTRID":
-			newValue = readInput(fmt.Sprintf("Enter new pre-clTRID (%s): ", conf.PreClTRID))
-			if newValue != "" {
-				conf.PreClTRID = newValue
-			}
-		case "defaultPeriod":
-			newValue = readInput(fmt.Sprintf("Enter new defaultPeriod (%d): ", conf.DefaultPeriod))
-			if newValue != "" {
-				var err error
-				conf.DefaultPeriod, err = strconv.Atoi(newValue)
-				if err != nil {
-					log.Fatalf("Invalid input: %s", err.Error())
-				}
-			}
-		default:
-			log.Fatalf("Invalid config option %s ", flag.Arg(1))
 		}
 
 		// ذخیره تغییرات در فایل تنظیمات
