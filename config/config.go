@@ -3,23 +3,13 @@ package config
 import (
 	"encoding/json"
 	"io/ioutil"
+
+	"github.com/irniclab/nicaction/types"
 )
 
-// Config ساختار تنظیمات نیک
-type Config struct {
-	EppAddress    string `json:"eppAddress"`
-	Nichandle     string `json:"nichandle"`
-	Token         string `json:"token"`
-	AuthCode      string `json:"authCode"`
-	Ns1           string `json:"ns1"`
-	Ns2           string `json:"ns2"`
-	PreClTRID     string `json:"preClTRID"`
-	DefaultPeriod int    `json:"defaultPeriod"`
-}
-
 // LoadConfig بارگذاری تنظیمات از فایل
-func LoadConfig(path string) (Config, error) {
-	var conf Config
+func LoadConfig(path string) (types.Config, error) {
+	var conf types.Config
 
 	bytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -35,7 +25,7 @@ func LoadConfig(path string) (Config, error) {
 }
 
 // SaveConfig ذخیره تغییرات تنظیمات در فایل
-func SaveConfig(path string, conf Config) error {
+func SaveConfig(path string, conf types.Config) error {
 	bytes, err := json.MarshalIndent(conf, "", "    ")
 	if err != nil {
 		return err

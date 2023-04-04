@@ -9,19 +9,10 @@ import (
 	"time"
 
 	"github.com/irniclab/nicaction/config"
+	"github.com/irniclab/nicaction/types"
 )
 
-type domainType struct {
-	ExpDate time.Time
-	Domain  string
-	holder  string
-	ns1     string
-	ns2     string
-	ns3     string
-	ns4     string
-}
-
-func domainWhoisXml(domain string, config config.Config) string {
+func domainWhoisXml(domain string, config types.Config) string {
 	xml := `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
             <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
                 <command>

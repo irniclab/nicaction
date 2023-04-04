@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"github.com/irniclab/nicaction/domainAction"
+
 	"github.com/irniclab/nicaction/config"
 )
 
