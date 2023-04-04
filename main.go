@@ -28,6 +28,7 @@ func main() {
 		periodFlag    = flag.Int("period", 0, "the period of the domain (required for 'register' action)")
 		nicHandleFlag = flag.String("nichandle", "", "the nicHandle for the domain (required for 'register' action)")
 		configFile    = flag.String("config", "", "path to config file")
+		configFlag    = flag.String("configFile", "", "path to config file")
 		showConfig    = flag.String("showConfig", "", "Show config")
 	)
 
@@ -62,9 +63,18 @@ func main() {
 		flag.Usage()
 		log.Fatal("period flag value must be either 1 or 5")
 	}
+	var confPath = ""
+	if *configFile != "" {
+		confPath = *configFile
+	} else {
+		confPath = *configFlag
+	}
+	if confPath == "" {
+		log.Fatal("Error please enter config file path")
+	}
 
 	// بارگذاری فایل تنظیمات
-	conf, err := config.LoadConfig(*configFile)
+	conf, err := config.LoadConfig(confPath)
 	if err != nil {
 		log.Fatalf("Error loading config file: %s", err.Error())
 	}
