@@ -10,30 +10,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yaa110/go-jalali"
+	"github.com/irniclab/nicaction/nicResponse"
+	ptime "github.com/yaa110/go-persian-calendar"
 
 	"github.com/irniclab/nicaction/types"
 )
-
-type domainInfo struct {
-	Name     string `xml:"infData>name"`
-	Statuses []struct {
-		Value string `xml:"s,attr"`
-	} `xml:"infData>status"`
-	Contacts []struct {
-		Type  string `xml:"type,attr"`
-		Value string `xml:",chardata"`
-	} `xml:"infData>contact"`
-	Ns     []string `xml:"infData>ns>hostAttr>hostName"`
-	CrDate string   `xml:"infData>crDate"`
-	UpDate string   `xml:"infData>upDate"`
-	ExDate string   `xml:"infData>exDate"`
-	Holder string   `xml:"infData>contact[type=holder]"`
-	Result struct {
-		Code string `xml:"code,attr"`
-		Msg  string `xml:"msg"`
-	} `xml:"result"`
-}
 
 func domainWhoisXml(domain string, config types.Config) string {
 	xml := `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -105,7 +86,7 @@ func sendXml(xml, address, token string) (string, error) {
 }
 
 func parseDomainInfoType(xmlContent string) (*types.DomainType, error) {
-	var di domainInfo
+	var di nicResponse.DomainWhoisInfoResponse
 	if err := xml.Unmarshal([]byte(xmlContent), &di); err != nil {
 		return nil, err
 	}
@@ -170,6 +151,6 @@ func addDays(t time.Time, days int) time.Time {
 }
 
 func convertToJalali(t time.Time) (string, error) {
-	jy, jm, jd := jalali.ToJalali(t.Year(), int(t.Month()), t.Day())
-	return fmt.Sprintf("%04d/%02d/%02d", jy, jm, jd), nil
+	pt := ptime.New(t)
+	return pt, nil
 }
