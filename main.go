@@ -167,7 +167,7 @@ func main() {
 			if err != nil {
 				log.Fatalf("Error is : %s", err.Error())
 			}
-			log.Printf("Result is %s ", res)
+			log.Printf("Domain: %s\nHolder: %s\nCreationDate: %s\nExpDate: %s\nns1: %s\n,ns2: %s\nns3: %s\nns4: %s\n ", res.Domain, res.Holder, res.CreateDate, res.ExpDate, res.Ns1, res.Ns2, res.Ns3, res.Ns4)
 		default:
 			log.Fatalf("Invalid action parameter. Allowed values: register, renew, delete, transfer, bulkRegister, bulkRenew")
 		}
