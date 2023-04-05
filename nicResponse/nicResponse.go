@@ -12,7 +12,7 @@ type DomainWhoisInfoResponse struct {
 	Ns     []string `xml:"domain:infData>ns>hostAttr>hostName"`
 	CrDate string   `xml:"domain:infData>crDate"`
 	UpDate string   `xml:"domain:infData>upDate"`
-	ExDate string   `xml:"domain:infData>exDate"`
+	ExDate string   `xml:"epp>response>resData>domain:infData>exDate"`
 	Holder string   `xml:"domain:infData>contact[type=holder]"`
 	Result struct {
 		Code string `xml:"code,attr"`
