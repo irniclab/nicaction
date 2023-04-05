@@ -70,7 +70,6 @@ func SendXml(xml string, config types.Config) (string, error) {
 	}
 
 	req.Header.Add("Authorization", "Bearer "+config.Token)
-	log.Printf("Header : Authorization: Bearer %s", config.Token)
 	//req.Header.Set("Content-Type", "application/xml")
 
 	resp, err := client.Do(req)
@@ -90,7 +89,7 @@ func SendXml(xml string, config types.Config) (string, error) {
 
 func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	var di nicResponse.DomainWhoisInfoResponse
-	//log.Printf("Raw Result is : %s", xmlContent)
+	log.Printf("Raw Result is : %s", xmlContent)
 	if err := xml.Unmarshal([]byte(xmlContent), &di); err != nil {
 		return nil, err
 	}
