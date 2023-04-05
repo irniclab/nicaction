@@ -63,6 +63,7 @@ func getPreClTRID(config types.Config) string {
 }
 
 func SendXml(xml string, config types.Config) (string, error) {
+	log.Printf("Raw Result is : %s", xml)
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", config.EppAddress, bytes.NewBufferString(xml))
 	if err != nil {
@@ -89,7 +90,7 @@ func SendXml(xml string, config types.Config) (string, error) {
 
 func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	var di nicResponse.DomainWhoisInfoResponse
-	log.Printf("Raw Result is : %s", xmlContent)
+	//log.Printf("Raw Result is : %s", xmlContent)
 	if err := xml.Unmarshal([]byte(xmlContent), &di); err != nil {
 		return nil, err
 	}
