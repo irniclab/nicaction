@@ -171,7 +171,7 @@ func main() {
 				log.Fatalf("Error is : %s", err.Error())
 			}
 			if result {
-				log.Printf("The domain %s has been successfully renewed for %s years.", domain, period)
+				log.Printf("The domain %s has been successfully renewed for %d years.", domain, period)
 			}
 		default:
 			log.Fatalf("Invalid action parameter. Allowed values: register, renew, delete, transfer, bulkRegister, bulkRenew")
