@@ -22,4 +22,4 @@ replace github.com/irniclab/nicaction/types => ./types
 
 replace github.com/irniclab/nicaction/xmlRequest => ./xmlRequest
 
-replace github.com/irniclab/nicaction/nicResponse => ../nicResponse
+replace github.com/irniclab/nicaction/nicResponse => ./nicResponse
