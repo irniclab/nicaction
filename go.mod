@@ -21,3 +21,5 @@ replace github.com/irniclab/nicaction/domainAction => ./domainAction
 replace github.com/irniclab/nicaction/types => ./types
 
 replace github.com/irniclab/nicaction/xmlRequest => ./xmlRequest
+
+replace github.com/irniclab/nicaction/nicResponse => ../nicResponse

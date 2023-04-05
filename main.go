@@ -173,6 +173,12 @@ func main() {
 			if result {
 				log.Printf("The domain %s has been successfully renewed for %d years.", domain, period)
 			}
+		case "DaysToRelease":
+			result, err := domainAction.DayToRelease(domain, conf)
+			if err != nil {
+				log.Fatalf("Error is : %s", err.Error())
+			}
+			log.Printf("The domain %s has %d days to release..", domain, result)
 		default:
 			log.Fatalf("Invalid action parameter. Allowed values: register, renew, delete, transfer, bulkRegister, bulkRenew")
 		}
