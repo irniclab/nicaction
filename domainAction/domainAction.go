@@ -17,7 +17,11 @@ func RenewDomain(domain string, period int, conf types.Config) (bool, error) {
 		log.Fatalf("Error in domain whois %s", error.Error())
 	}
 	reqStr := xmlRequest.DomainRenewXml(domain, xmlRequest.FormatDateString(dt.ExpDate), period, conf)
-	result, error := xmlRequest.SendXml(reqStr, conf)
+	resp, error := xmlRequest.SendXml(reqStr, conf)
+	if error != nil {
+		log.Fatalf("Error in renew domain from nic %s", error.Error())
+	}
+	result, error := xmlRequest.ParseDomainRenewResponse(resp)
 	if error != nil {
 		log.Fatalf("Error in renew domain from nic %s", error.Error())
 	}
@@ -25,7 +29,7 @@ func RenewDomain(domain string, period int, conf types.Config) (bool, error) {
 }
 
 func Whois(domain string, conf types.Config) (types.DomainType, error) {
-	var result types.DomainType
+	var result *types.DomainType
 	reqStr := xmlRequest.DomainWhoisXml(domain, conf)
 	resStr, error := xmlRequest.SendXml(reqStr, conf)
 	if error != nil {
@@ -36,5 +40,5 @@ func Whois(domain string, conf types.Config) (types.DomainType, error) {
 		log.Fatalf("Error in Fetch result of Whois from nic %s", error.Error())
 	}
 	//fmt.Print("Whois domain : " + domain)
-	return result, error
+	return *result, error
 }
