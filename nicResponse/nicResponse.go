@@ -1,25 +1,35 @@
 package nicResponse
 
-import "time"
+import "encoding/xml"
 
-type DomainWhoisInfoResponse struct {
-	Name     string `xml:"domain:infData>name"`
-	Statuses []struct {
-		Value string `xml:"s,attr"`
-	} `xml:"domain:infData>status"`
-	Contacts []struct {
-		Type  string `xml:"type,attr"`
-		Value string `xml:",chardata"`
-	} `xml:"domain:infData>contact"`
-	Ns     []string  `xml:"domain:infData>ns>hostAttr>hostName"`
-	CrDate time.Time `xml:"domain:infData>crDate"`
-	UpDate string    `xml:"domain:infData>upDate"`
-	ExDate string    `xml:"domain:infData>exDate"`
-	Holder string    `xml:"domain:infData>contact[type=holder]"`
-	Result struct {
-		Code string `xml:"code,attr"`
-		Msg  string `xml:"msg"`
-	} `xml:"result"`
+type DomainWhoisResponse struct {
+	XMLName  xml.Name `xml:"epp"`
+	Response struct {
+		XMLName xml.Name `xml:"response"`
+		Result  struct {
+			Code string `xml:"code,attr"`
+			Msg  string `xml:"msg"`
+		} `xml:"result"`
+		ResData struct {
+			XMLName xml.Name `xml:"resData"`
+			InfData struct {
+				XMLName  xml.Name `xml:"infData"`
+				Name     string   `xml:"name"`
+				Statuses []struct {
+					Value string `xml:"s,attr"`
+				} `xml:"status"`
+				Contacts []struct {
+					Type  string `xml:"type,attr"`
+					Value string `xml:",chardata"`
+				} `xml:"contact"`
+				Ns     []string `xml:"ns>hostAttr>hostName"`
+				CrDate string   `xml:"crDate"`
+				UpDate string   `xml:"upDate"`
+				ExDate string   `xml:"exDate"`
+				Holder string   `xml:"contact[type=holder]"`
+			} `xml:"infData"`
+		} `xml:"resData"`
+	} `xml:"response"`
 }
 
 type DomainRenewResponse struct {

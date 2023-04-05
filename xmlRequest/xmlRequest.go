@@ -17,6 +17,36 @@ import (
 	"github.com/irniclab/nicaction/types"
 )
 
+type DomainWhoisResponse struct {
+	XMLName  xml.Name `xml:"epp"`
+	Response struct {
+		XMLName xml.Name `xml:"response"`
+		Result  struct {
+			Code string `xml:"code,attr"`
+			Msg  string `xml:"msg"`
+		} `xml:"result"`
+		ResData struct {
+			XMLName xml.Name `xml:"resData"`
+			InfData struct {
+				XMLName  xml.Name `xml:"infData"`
+				Name     string   `xml:"name"`
+				Statuses []struct {
+					Value string `xml:"s,attr"`
+				} `xml:"status"`
+				Contacts []struct {
+					Type  string `xml:"type,attr"`
+					Value string `xml:",chardata"`
+				} `xml:"contact"`
+				Ns     []string `xml:"ns>hostAttr>hostName"`
+				CrDate string   `xml:"crDate"`
+				UpDate string   `xml:"upDate"`
+				ExDate string   `xml:"exDate"`
+				Holder string   `xml:"contact[type=holder]"`
+			} `xml:"infData"`
+		} `xml:"resData"`
+	} `xml:"response"`
+}
+
 func DomainWhoisXml(domain string, config types.Config) string {
 	xml := `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 				<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
@@ -89,16 +119,16 @@ func SendXml(xml string, config types.Config) (string, error) {
 }
 
 func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
-	var di nicResponse.DomainWhoisInfoResponse
+	var di DomainWhoisResponse
 	//log.Printf("Raw Result is : %s", xmlContent)
 	if err := xml.Unmarshal([]byte(xmlContent), &di); err != nil {
 		return nil, err
 	}
 
-	if di.Result.Code == "2502" {
+	if di.Response.Result.Code == "2502" {
 		return nil, errors.New("Session limit exceeded; server closing connection")
 	}
-	log.Printf("di.ExDate : %s", di.ExDate)
+	log.Printf("di.Response.ResData.InfData.ExDate : %s", di.Response.ResData.InfData.ExDate)
 
 	d := &types.DomainType{
 		Domain:       di.Name,
