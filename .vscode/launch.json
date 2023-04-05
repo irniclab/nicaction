@@ -10,7 +10,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${fileDirname} --config "
+            "program": "${fileDirname} --configFile /home/eae966/NicActionsTest/config.json --action renew --domain iranpixord.ir"
         }
     ]
 }
