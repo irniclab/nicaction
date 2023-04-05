@@ -131,6 +131,8 @@ func parseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 
 	if t, err := time.Parse("2006-01-02T15:04:05", di.ExDate); err == nil {
 		d.ExpDate = t
+		d.LockDate = addDays(t, 30)
+		d.ReleaseDate = addDays(t, 60)
 	}
 	if t, err := time.Parse("2006-01-02T15:04:05", di.CrDate); err == nil {
 		d.CreateDate = t
