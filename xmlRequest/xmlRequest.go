@@ -16,7 +16,7 @@ import (
 	"github.com/irniclab/nicaction/types"
 )
 
-func domainWhoisXml(domain string, config types.Config) string {
+func DomainWhoisXml(domain string, config types.Config) string {
 	xml := `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
             <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
                 <command>
@@ -60,14 +60,14 @@ func getPreClTRID(config types.Config) string {
 	return config.PreClTRID + "-" + randomStr
 }
 
-func sendXml(xml, address, token string) (string, error) {
+func SendXml(xml string, config types.Config) (string, error) {
 	client := &http.Client{}
-	req, err := http.NewRequest("POST", address, bytes.NewBufferString(xml))
+	req, err := http.NewRequest("POST", config.EppAddress, bytes.NewBufferString(xml))
 	if err != nil {
 		return "", err
 	}
 
-	req.Header.Add("Authorization", "Bearer "+token)
+	req.Header.Add("Authorization", "Bearer "+config.Token)
 	req.Header.Set("Content-Type", "application/xml")
 
 	resp, err := client.Do(req)
@@ -85,7 +85,7 @@ func sendXml(xml, address, token string) (string, error) {
 	return string(bodyBytes), nil
 }
 
-func parseDomainInfoType(xmlContent string) (*types.DomainType, error) {
+func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	var di nicResponse.DomainWhoisInfoResponse
 	if err := xml.Unmarshal([]byte(xmlContent), &di); err != nil {
 		return nil, err

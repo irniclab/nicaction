@@ -1,6 +1,9 @@
 package types
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type DomainType struct {
 	ExpDate      time.Time
@@ -28,4 +31,24 @@ type Config struct {
 	Ns2           string `json:"ns2"`
 	PreClTRID     string `json:"preClTRID"`
 	DefaultPeriod int    `json:"defaultPeriod"`
+}
+
+func ConvertDomainTypeToJSONByte(dt DomainType) ([]byte, error) {
+	jsonData, err := json.Marshal(dt)
+	if err != nil {
+		return nil, err
+	}
+	return jsonData, nil
+}
+
+func ConvertConfigTypeToJSONByte(ct Config) ([]byte, error) {
+	jsonData, err := json.Marshal(ct)
+	if err != nil {
+		return nil, err
+	}
+	return jsonData, nil
+}
+
+func ConvertJsonByteToString(jsByte []byte) (string, error) {
+	return string(jsByte), nil
 }
