@@ -196,7 +196,7 @@ func addDays(t time.Time, days int) time.Time {
 	return t.AddDate(0, 0, days)
 }
 
-func convertToJalali(t time.Time) (string, error) {
+func convertToJalali(t time.Time) (ptime.Time, error) {
 	pt := ptime.New(t)
 	return pt, nil
 }
