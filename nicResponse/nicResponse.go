@@ -1,23 +1,31 @@
 package nicResponse
 
 type DomainWhoisInfoResponse struct {
-	Name     string `xml:"domain:infData>name"`
-	Statuses []struct {
-		Value string `xml:"s,attr"`
-	} `xml:"domain:infData>status"`
-	Contacts []struct {
-		Type  string `xml:"type,attr"`
-		Value string `xml:",chardata"`
-	} `xml:"domain:infData>contact"`
-	Ns     []string `xml:"domain:infData>ns>hostAttr>hostName"`
-	CrDate string   `xml:"domain:infData>crDate"`
-	UpDate string   `xml:"domain:infData>upDate"`
-	ExDate string   `xml:"epp>response>resData>domain:infData>exDate"`
-	Holder string   `xml:"domain:infData>contact[type=holder]"`
 	Result struct {
 		Code string `xml:"code,attr"`
 		Msg  string `xml:"msg"`
 	} `xml:"result"`
+	Data struct {
+		InfData struct {
+			Name     string `xml:"http://epp.nic.ir/ns/domain-1.0 name"`
+			Roid     string `xml:"http://epp.nic.ir/ns/domain-1.0 roid"`
+			Statuses []struct {
+				Value string `xml:"s,attr"`
+			} `xml:"http://epp.nic.ir/ns/domain-1.0 status"`
+			Contacts []struct {
+				Type  string `xml:"type,attr"`
+				Value string `xml:",chardata"`
+			} `xml:"http://epp.nic.ir/ns/domain-1.0 contact"`
+			Ns     []string `xml:"http://epp.nic.ir/ns/domain-1.0 ns>hostAttr>hostName"`
+			CrDate string   `xml:"http://epp.nic.ir/ns/domain-1.0 crDate"`
+			UpDate string   `xml:"http://epp.nic.ir/ns/domain-1.0 upDate"`
+			ExDate string   `xml:"http://epp.nic.ir/ns/domain-1.0 exDate"`
+		} `xml:"http://epp.nic.ir/ns/domain-1.0 infData"`
+	} `xml:"resData"`
+	TRID struct {
+		ClTRID string `xml:"clTRID"`
+		SvTRID string `xml:"svTRID"`
+	} `xml:"trID"`
 }
 
 type DomainRenewResponse struct {
