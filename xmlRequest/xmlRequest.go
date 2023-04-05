@@ -22,7 +22,7 @@ func DomainWhoisXml(domain string, config types.Config) string {
 				<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
                 	<command>
                     	<info>
-                        	<domain:info xmlns:domain="%s/ns/domain-1.0">
+						<domain:info xmlns:domain="http://epp.nic.ir/ns/domain-1.0">
                             	<domain:name>%s</domain:name>
 								<domain:authInfo>
  									<domain:pw>%s</domain:pw>
@@ -32,7 +32,7 @@ func DomainWhoisXml(domain string, config types.Config) string {
                     	<clTRID>%s</clTRID>
                 	</command>
             	</epp>`
-	return fmt.Sprintf(xml, config.EppAddress, domain, config.AuthCode, getPreClTRID(config))
+	return fmt.Sprintf(xml, domain, config.AuthCode, getPreClTRID(config))
 }
 
 func DomainRenewXml(domain string, expDate string, period int, config types.Config) string {
