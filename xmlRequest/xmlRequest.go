@@ -63,7 +63,7 @@ func getPreClTRID(config types.Config) string {
 }
 
 func SendXml(xml string, config types.Config) (string, error) {
-	log.Printf("Raw Result is : %s", xml)
+	//log.Printf("Raw Result is : %s", xml)
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", config.EppAddress, bytes.NewBufferString(xml))
 	if err != nil {
@@ -98,6 +98,7 @@ func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	if di.Result.Code == "2502" {
 		return nil, errors.New("Session limit exceeded; server closing connection")
 	}
+	log.Printf("di.ExDate : %s", di.ExDate)
 
 	d := &types.DomainType{
 		Domain:       di.Name,
@@ -144,7 +145,8 @@ func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	if t, err := time.Parse("2006-01-02T15:04:05", di.UpDate); err == nil {
 		d.UpdateDate = t
 	}
-
+	log.Printf("d.ExpDate format : %s", d.ExpDate.Format("2006-01-02"))
+	log.Printf("d.ExpDate String : %s", d.ExpDate.String())
 	return d, nil
 }
 

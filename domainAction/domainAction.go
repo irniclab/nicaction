@@ -13,7 +13,7 @@ func registerDomain(domain string, nicHanle string, period int, ns1 string, ns2 
 
 func RenewDomain(domain string, period int, conf types.Config) (bool, error) {
 	dt, error := Whois(domain, conf)
-	log.Printf("Exp Date is : " + dt.ExpDate.String())
+	//log.Printf("Exp Date is : " + dt.ExpDate.String())
 	if error != nil {
 		log.Fatalf("Error in domain whois %s", error.Error())
 	}
