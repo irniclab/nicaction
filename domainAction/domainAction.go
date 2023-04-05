@@ -32,7 +32,7 @@ func RenewDomain(domain string, period int, conf types.Config) (bool, error) {
 func Whois(domain string, conf types.Config) (types.DomainType, error) {
 	var result *types.DomainType
 	reqStr := xmlRequest.DomainWhoisXml(domain, conf)
-	log.Print(reqStr)
+	//log.Print(reqStr)
 	resStr, error := xmlRequest.SendXml(reqStr, conf)
 	if error != nil {
 		log.Fatalf("Error in Whois from nic %s", error.Error())
