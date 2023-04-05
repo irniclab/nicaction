@@ -14,4 +14,6 @@ replace github.com/irniclab/nicaction/types => ../types
 
 replace github.com/irniclab/nicaction/xmlRequest => ../xmlRequest
 
+replace github.com/irniclab/nicaction/xmlRequest => ../nicResponse
+
 go 1.19
