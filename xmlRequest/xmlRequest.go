@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"time"
@@ -87,6 +88,7 @@ func SendXml(xml string, config types.Config) (string, error) {
 
 func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	var di nicResponse.DomainWhoisInfoResponse
+	log.Printf("Raw Result is : %s", xmlContent)
 	if err := xml.Unmarshal([]byte(xmlContent), &di); err != nil {
 		return nil, err
 	}
