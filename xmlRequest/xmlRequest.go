@@ -19,39 +19,40 @@ import (
 
 func DomainWhoisXml(domain string, config types.Config) string {
 	xml := `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-            <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-                <command>
-                    <info>
-                        <domain:info xmlns:domain="%s/ns/domain-1.0">
-                            <domain:name>%s</domain:name>
-							<domain:authInfo>
- 								<domain:pw>%s</domain:pw>
- 							</domain:authInfo>
-                        </domain:info>
-                    </info>
-                    <clTRID>%s</clTRID>
-                </command>
-            </epp>`
+				<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+                	<command>
+                    	<info>
+                        	<domain:info xmlns:domain="%s/ns/domain-1.0">
+                            	<domain:name>%s</domain:name>
+								<domain:authInfo>
+ 									<domain:pw>%s</domain:pw>
+ 								</domain:authInfo>
+                        	</domain:info>
+                    	</info>
+                    	<clTRID>%s</clTRID>
+                	</command>
+            	</epp>`
 	return fmt.Sprintf(xml, config.EppAddress, domain, config.AuthCode, getPreClTRID(config))
 }
 
 func DomainRenewXml(domain string, expDate string, period int, config types.Config) string {
-	xml := `<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-				<command>
-					<renew>
-						<domain:renew xmlns:domain="http://epp.nic.ir/ns/domain-1.0">
-							<domain:name>%s</domain:name>
-							<domain:curExpDate>%s</domain:curExpDate>
-							<domain:period unit="m">%d</domain:period>
-							<domain:authInfo>
-								<domain:pw>%s</domain:pw>
-							</domain:authInfo>
-						</domain:renew>
-					</renew>
-					<clTRID>%s</clTRID>
-				</command>
-   			</epp>`
-	return fmt.Sprintf(xml, domain, expDate, config.AuthCode, getPreClTRID(config))
+	xml := `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+				<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+					<command>
+						<renew>
+							<domain:renew xmlns:domain="http://epp.nic.ir/ns/domain-1.0">
+								<domain:name>%s</domain:name>
+								<domain:curExpDate>%s</domain:curExpDate>
+								<domain:period unit="m">%d</domain:period>
+								<domain:authInfo>
+									<domain:pw>%s</domain:pw>
+								</domain:authInfo>
+							</domain:renew>
+						</renew>
+						<clTRID>%s</clTRID>
+					</command>
+   				</epp>`
+	return fmt.Sprintf(xml, domain, expDate, period, config.AuthCode, getPreClTRID(config))
 }
 
 func getPreClTRID(config types.Config) string {
