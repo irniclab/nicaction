@@ -1,19 +1,19 @@
 package nicResponse
 
 type DomainWhoisInfoResponse struct {
-	Name     string `xml:"infData>name"`
+	Name     string `xml:"domain:infData>name"`
 	Statuses []struct {
 		Value string `xml:"s,attr"`
-	} `xml:"infData>status"`
+	} `xml:"domain:infData>status"`
 	Contacts []struct {
 		Type  string `xml:"type,attr"`
 		Value string `xml:",chardata"`
-	} `xml:"infData>contact"`
-	Ns     []string `xml:"infData>ns>hostAttr>hostName"`
-	CrDate string   `xml:"infData>crDate"`
-	UpDate string   `xml:"infData>upDate"`
-	ExDate string   `xml:"infData>exDate"`
-	Holder string   `xml:"infData>contact[type=holder]"`
+	} `xml:"domain:infData>contact"`
+	Ns     []string `xml:"domain:infData>ns>hostAttr>hostName"`
+	CrDate string   `xml:"domain:infData>crDate"`
+	UpDate string   `xml:"domain:infData>upDate"`
+	ExDate string   `xml:"domain:infData>exDate"`
+	Holder string   `xml:"domain:infData>contact[type=holder]"`
 	Result struct {
 		Code string `xml:"code,attr"`
 		Msg  string `xml:"msg"`
