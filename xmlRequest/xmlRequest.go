@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"net/http"
 	"time"
@@ -128,7 +127,7 @@ func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	if di.Response.Result.Code == "2502" {
 		return nil, errors.New("Session limit exceeded; server closing connection")
 	}
-	log.Printf("di.Response.ResData.InfData.ExDate : %s", di.Response.ResData.InfData.ExDate)
+	//log.Printf("di.Response.ResData.InfData.ExDate : %s", di.Response.ResData.InfData.ExDate)
 
 	d := &types.DomainType{
 		Domain:       di.Response.ResData.InfData.Name,
@@ -175,8 +174,8 @@ func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	if t, err := time.Parse("2006-01-02T15:04:05", di.Response.ResData.InfData.UpDate); err == nil {
 		d.UpdateDate = t
 	}
-	log.Printf("d.ExpDate format : %s", d.ExpDate.Format("2006-01-02"))
-	log.Printf("d.ExpDate String : %s", d.ExpDate.String())
+	//log.Printf("d.ExpDate format : %s", d.ExpDate.Format("2006-01-02"))
+	//log.Printf("d.ExpDate String : %s", d.ExpDate.String())
 	return d, nil
 }
 
