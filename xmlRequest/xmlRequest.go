@@ -144,6 +144,50 @@ func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	return d, nil
 }
 
+func ParseDomainRenewResponse(xmlContent string) (bool, error) {
+	var di nicResponse.GeneralResponse
+	if err := xml.Unmarshal([]byte(xmlContent), &di); err != nil {
+		return false, err
+	}
+
+	if di.Result.Code == "1001" {
+		return true, nil
+	}
+	if di.Result.Code == "2502" {
+		return false, errors.New("Session limit exceeded; server closing connection")
+	} else if di.Result.Code == "2000" {
+		return false, errors.New("Request has a wrong format")
+	} else if di.Result.Code == "2001" {
+		return false, errors.New("Request has a wrong command")
+	} else if di.Result.Code == "2003" {
+		return false, errors.New("mandatory fields in the request is missing")
+	} else if di.Result.Code == "2004" {
+		return false, errors.New("The value sent in the request is out of the acceptable range")
+	} else if di.Result.Code == "2005" {
+		return false, errors.New("The value sent in the request has an incorrect format")
+	} else if di.Result.Code == "2101" {
+		return false, errors.New("The request sent is incorrect")
+	} else if di.Result.Code == "2104" {
+		return false, errors.New("Billing failure")
+	} else if di.Result.Code == "2105" {
+		return false, errors.New("Object is not eligible for renewal")
+	} else if di.Result.Code == "2200" {
+		return false, errors.New("Authentication error")
+	} else if di.Result.Code == "2201" {
+		return false, errors.New("Authorization error")
+	} else if di.Result.Code == "2202" {
+		return false, errors.New("Invalid authorization information")
+	} else if di.Result.Code == "2303" {
+		return false, errors.New("Object not does exist")
+	} else if di.Result.Code == "2304" {
+		return false, errors.New("Object status prohibits operation")
+	} else if di.Result.Code == "2400" {
+		return false, errors.New("Command failed")
+	} else {
+		return false, errors.New("An unknown error has occurred")
+	}
+}
+
 func formatDateString(t time.Time) string {
 	return t.Format("2006-01-02")
 }
