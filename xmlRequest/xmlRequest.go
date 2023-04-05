@@ -188,7 +188,7 @@ func ParseDomainRenewResponse(xmlContent string) (bool, error) {
 	}
 }
 
-func formatDateString(t time.Time) string {
+func FormatDateString(t time.Time) string {
 	return t.Format("2006-01-02")
 }
 

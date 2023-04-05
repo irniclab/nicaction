@@ -11,9 +11,22 @@ func registerDomain(domain string, nicHanle string, period int, ns1 string, ns2 
 	return true, nil
 }
 
+func RenewDomain(domain string, period int, conf types.Config) (bool, error) {
+	dt, error := Whois(domain, conf)
+	if error != nil {
+		log.Fatalf("Error in domain whois %s", error.Error())
+	}
+	reqStr := xmlRequest.DomainRenewXml(domain, xmlRequest.FormatDateString(dt.ExpDate), period, conf)
+	result, error := xmlRequest.SendXml(reqStr, conf)
+	if error != nil {
+		log.Fatalf("Error in renew domain from nic %s", error.Error())
+	}
+	return result, nil
+}
+
 func Whois(domain string, conf types.Config) (types.DomainType, error) {
 	var result types.DomainType
-	reqStr := xmlRequest.DomainWhoisXml(string, conf)
+	reqStr := xmlRequest.DomainWhoisXml(domain, conf)
 	resStr, error := xmlRequest.SendXml(reqStr, conf)
 	if error != nil {
 		log.Fatalf("Error in Whois from nic %s", error.Error())
