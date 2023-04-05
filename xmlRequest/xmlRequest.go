@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"time"
@@ -69,7 +70,8 @@ func SendXml(xml string, config types.Config) (string, error) {
 	}
 
 	req.Header.Add("Authorization", "Bearer "+config.Token)
-	req.Header.Set("Content-Type", "application/xml")
+	log.Printf("Header : Authorization: Bearer %s", config.Token)
+	//req.Header.Set("Content-Type", "application/xml")
 
 	resp, err := client.Do(req)
 	if err != nil {
