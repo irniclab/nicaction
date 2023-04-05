@@ -131,9 +131,9 @@ func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	log.Printf("di.Response.ResData.InfData.ExDate : %s", di.Response.ResData.InfData.ExDate)
 
 	d := &types.DomainType{
-		Domain:       di.Name,
-		Holder:       di.Holder,
-		DomainStatus: make([]string, len(di.Statuses)),
+		Domain:       di.Response.ResData.InfData.Name,
+		Holder:       di.Response.ResData.InfData.Holder,
+		DomainStatus: make([]string, len(di.Response.ResData.InfData.Statuses)),
 		Ns1:          "",
 		Ns2:          "",
 		Ns3:          "",
@@ -144,35 +144,35 @@ func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	}
 
 	copy(d.DomainStatus, func() []string {
-		s := make([]string, len(di.Statuses))
+		s := make([]string, len(di.Response.ResData.InfData.Statuses))
 		for i := range s {
-			s[i] = di.Statuses[i].Value
+			s[i] = di.Response.ResData.InfData.Statuses[i].Value
 		}
 		return s
 	}())
 
-	if len(di.Ns) > 0 {
-		d.Ns1 = di.Ns[0]
+	if len(di.Response.ResData.InfData.Ns) > 0 {
+		d.Ns1 = di.Response.ResData.InfData.Ns[0]
 	}
-	if len(di.Ns) > 1 {
-		d.Ns2 = di.Ns[1]
+	if len(di.Response.ResData.InfData.Ns) > 1 {
+		d.Ns2 = di.Response.ResData.InfData.Ns[1]
 	}
-	if len(di.Ns) > 2 {
-		d.Ns3 = di.Ns[2]
+	if len(di.Response.ResData.InfData.Ns) > 2 {
+		d.Ns3 = di.Response.ResData.InfData.Ns[2]
 	}
-	if len(di.Ns) > 3 {
-		d.Ns4 = di.Ns[3]
+	if len(di.Response.ResData.InfData.Ns) > 3 {
+		d.Ns4 = di.Response.ResData.InfData.Ns[3]
 	}
 
-	if t, err := time.Parse("2006-01-02T15:04:05", di.ExDate); err == nil {
+	if t, err := time.Parse("2006-01-02T15:04:05", di.Response.ResData.InfData.ExDate); err == nil {
 		d.ExpDate = t
 		d.LockDate = addDays(t, 30)
 		d.ReleaseDate = addDays(t, 60)
 	}
-	if t, err := time.Parse("2006-01-02T15:04:05", di.CrDate); err == nil {
+	if t, err := time.Parse("2006-01-02T15:04:05", di.Response.ResData.InfData.CrDate); err == nil {
 		d.CreateDate = t
 	}
-	if t, err := time.Parse("2006-01-02T15:04:05", di.UpDate); err == nil {
+	if t, err := time.Parse("2006-01-02T15:04:05", di.Response.ResData.InfData.UpDate); err == nil {
 		d.UpdateDate = t
 	}
 	log.Printf("d.ExpDate format : %s", d.ExpDate.Format("2006-01-02"))
