@@ -65,7 +65,7 @@ func DayToRelease(domain string, conf types.Config) (int, error) {
 func subtractDays(t time.Time) int {
 	today := time.Now()
 	today = time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
-	t = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
-	diff := today.Sub(t)
-	return int(diff.Hours()/24) - 59
+	t = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location()).AddDate(0, 0, 60)
+	diff := t.Sub(today)
+	return int(diff.Hours() / 24)
 }
