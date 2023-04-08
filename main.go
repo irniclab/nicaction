@@ -90,10 +90,7 @@ func main() {
 	} else {
 		nicHandle = conf.Nichandle
 	}
-	domain := strings.ToLower(strings.TrimSpace(*domainFlag))
-	if !strings.HasSuffix(domain, ".ir") {
-		domain = domain + ".ir"
-	}
+	domain := *domainFlag
 
 	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
 	if *showConfig != "" {
@@ -166,12 +163,29 @@ func main() {
 			}
 			log.Printf("Domain: %s\nHolder: %s\nCreationDate: %s\nExpDate: %s\nns1: %s\n,ns2: %s\nns3: %s\nns4: %s\n ", res.Domain, res.Holder, res.CreateDate, res.ExpDate, res.Ns1, res.Ns2, res.Ns3, res.Ns4)
 		case "renew":
-			result, err := domainAction.RenewDomain(domain, period, conf)
-			if err != nil {
-				log.Fatalf("Error is : %s", err.Error())
-			}
-			if result {
-				log.Printf("The domain %s has been successfully renewed for %d years.", domain, period)
+			if strings.Contains(domain, ",") {
+				// کاراکتر , در رشته وجود دارد
+				domainList := strings.Split(domain, ",")
+				for _, d := range domainList {
+					domain = fixIrDomainName(d)
+					result, err := domainAction.RenewDomain(domain, period, conf)
+					if err != nil {
+						log.Fatalf("Error is : %s", err.Error())
+					}
+					if result {
+						log.Printf("The domain %s has been successfully renewed for %d years.", domain, period)
+					}
+				}
+			} else {
+				domain = fixIrDomainName(domain)
+				// کاراکتر , در رشته وجود ندارد
+				result, err := domainAction.RenewDomain(domain, period, conf)
+				if err != nil {
+					log.Fatalf("Error is : %s", err.Error())
+				}
+				if result {
+					log.Printf("The domain %s has been successfully renewed for %d years.", domain, period)
+				}
 			}
 		case "DaysToRelease":
 			result, err := domainAction.DayToRelease(domain, conf)
@@ -190,4 +204,12 @@ func readInput(prompt string) string {
 	fmt.Print(prompt)
 	fmt.Scanln(&value)
 	return value
+}
+
+func fixIrDomainName(domain string) string {
+	domain = strings.ToLower(strings.TrimSpace(domain))
+	if !strings.HasSuffix(domain, ".ir") {
+		domain = domain + ".ir"
+	}
+	return domain
 }
