@@ -9,6 +9,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/irniclab/nicaction/nicResponse"
@@ -33,6 +34,40 @@ func DomainWhoisXml(domain string, config types.Config) string {
                 	</command>
             	</epp>`
 	return fmt.Sprintf(xml, domain, config.AuthCode, getPreClTRID(config))
+}
+
+func CreateDomainRequest(domain string, period int, holder string, ns []string, config types.Config) (string, error) {
+	// Build the XML request
+	var xmlReq string
+	xmlReq += `<?xml version="1.0" encoding="UTF-8" standalone="no"?>`
+	xmlReq += `<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">`
+	xmlReq += `  <command>`
+	xmlReq += `    <create>`
+	xmlReq += `      <domain:create xmlns:domain="http://epp.nic.ir/ns/domain-1.0">`
+	xmlReq += `        <domain:name>` + domain + `</domain:name>`
+	xmlReq += `        <domain:period unit="m">` + strconv.Itoa(period) + `</domain:period>`
+	xmlReq += `        <domain:ns>`
+	for _, nsItem := range ns {
+		xmlReq += `          <domain:hostAttr>`
+		xmlReq += `            <domain:hostName>` + nsItem + `</domain:hostName>`
+		xmlReq += `          </domain:hostAttr>`
+	}
+	xmlReq += `        </domain:ns>`
+	xmlReq += `        <domain:contact type="holder">` + holder + `</domain:contact>`
+	xmlReq += `        <domain:contact type="admin">` + holder + `</domain:contact>`
+	xmlReq += `        <domain:contact type="tech">` + holder + `</domain:contact>`
+	xmlReq += `        <domain:contact type="bill">` + config.MainNicHandle + `</domain:contact>`
+	xmlReq += `        <domain:agreement>true</domain:agreement>`
+	xmlReq += `        <domain:authInfo>`
+	xmlReq += `          <domain:pw>` + config.AuthCode + `</domain:pw>`
+	xmlReq += `        </domain:authInfo>`
+	xmlReq += `      </domain:create>`
+	xmlReq += `    </create>`
+	xmlReq += `    <clTRID>` + getPreClTRID(config) + `</clTRID>`
+	xmlReq += `  </command>`
+	xmlReq += `</epp>`
+
+	return xmlReq, nil
 }
 
 func DomainRenewXml(domain string, expDate string, period int, config types.Config) string {
