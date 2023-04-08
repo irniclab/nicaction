@@ -90,7 +90,7 @@ func RenewDomainListFromPath(filePath string, period int, conf types.Config) []t
 		log.Fatalf("Error in reading files %s", error.Error())
 	}
 	for _, dm := range domainList {
-		res, error := RenewDomainWithError(dm, period, conf)
+		res, error := RenewDomainWithError(FixIrDomainName(dm), period, conf)
 		if error != nil {
 			result := types.DomainListResult{
 				Domain:   dm,
@@ -209,4 +209,12 @@ func FilterSlice(s1 []string, s2 []string) []string {
 		}
 	}
 	return result
+}
+
+func FixIrDomainName(domain string) string {
+	domain = strings.ToLower(strings.TrimSpace(domain))
+	if !strings.HasSuffix(domain, ".ir") {
+		domain = domain + ".ir"
+	}
+	return domain
 }

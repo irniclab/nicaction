@@ -23,13 +23,14 @@ func main() {
 	}
 
 	var (
-		actionFlag    = flag.String("action", "", "the action to perform")
-		domainFlag    = flag.String("domain", "", "the domain to perform")
-		periodFlag    = flag.Int("period", 0, "the period of the domain (required for 'register' action)")
-		nicHandleFlag = flag.String("nichandle", "", "the nicHandle for the domain (required for 'register' action)")
-		configFile    = flag.String("config", "", "path to config file")
-		configFlag    = flag.String("configFile", "", "path to config file")
-		showConfig    = flag.String("showConfig", "", "Show config")
+		actionFlag     = flag.String("action", "", "the action to perform")
+		domainFlag     = flag.String("domain", "", "the domain to perform")
+		periodFlag     = flag.Int("period", 0, "the period of the domain (required for 'register' action)")
+		nicHandleFlag  = flag.String("nichandle", "", "the nicHandle for the domain (required for 'register' action)")
+		configFile     = flag.String("config", "", "path to config file")
+		configFlag     = flag.String("configFile", "", "path to config file")
+		domainFileFlag = flag.String("domainile", "", "path to config file")
+		showConfig     = flag.String("showConfig", "", "Show config")
 	)
 
 	flag.Parse()
@@ -162,12 +163,22 @@ func main() {
 				log.Fatalf("Error is : %s", err.Error())
 			}
 			log.Printf("Domain: %s\nHolder: %s\nCreationDate: %s\nExpDate: %s\nns1: %s\n,ns2: %s\nns3: %s\nns4: %s\n ", res.Domain, res.Holder, res.CreateDate, res.ExpDate, res.Ns1, res.Ns2, res.Ns3, res.Ns4)
+		case "renewdomainfromfile":
+			result := domainAction.RenewDomainListFromPath(*domainFileFlag, period, conf)
+			for _, res := range result {
+				if res.Result {
+					log.Printf("The domain %s has been successfully renewed for %d years.", res.Domain, period)
+				} else {
+					log.Printf("The domain %s has has error for renew.the error is %s", res.Domain, res.ErrorMsg)
+				}
+
+			}
 		case "renew":
 			if strings.Contains(domain, ",") {
 				// کاراکتر , در رشته وجود دارد
 				domainList := strings.Split(domain, ",")
 				for _, d := range domainList {
-					domain = fixIrDomainName(d)
+					domain = domainAction.FixIrDomainName(d)
 					result, err := domainAction.RenewDomain(domain, period, conf)
 					if err != nil {
 						log.Fatalf("Error is : %s", err.Error())
@@ -177,7 +188,7 @@ func main() {
 					}
 				}
 			} else {
-				domain = fixIrDomainName(domain)
+				domain = domainAction.FixIrDomainName(domain)
 				// کاراکتر , در رشته وجود ندارد
 				result, err := domainAction.RenewDomain(domain, period, conf)
 				if err != nil {
@@ -204,12 +215,4 @@ func readInput(prompt string) string {
 	fmt.Print(prompt)
 	fmt.Scanln(&value)
 	return value
-}
-
-func fixIrDomainName(domain string) string {
-	domain = strings.ToLower(strings.TrimSpace(domain))
-	if !strings.HasSuffix(domain, ".ir") {
-		domain = domain + ".ir"
-	}
-	return domain
 }
