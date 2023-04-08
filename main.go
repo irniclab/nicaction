@@ -162,7 +162,7 @@ func main() {
 			if err != nil {
 				log.Fatalf("Error is : %s", err.Error())
 			}
-			log.Printf("Domain: %s\nHolder: %s\nCreationDate: %s\nExpDate: %s\nns1: %s\n,ns2: %s\nns3: %s\nns4: %s\n ", res.Domain, res.Holder, res.CreateDate, res.ExpDate, res.Ns1, res.Ns2, res.Ns3, res.Ns4)
+			log.Printf("Domain: %s\nHolder: %s\nCreationDate: %s\nExpDate: %s\nns1: %s\nns2: %s\nns3: %s\nns4: %s\nDomainStatus: %s ", res.Domain, res.Holder, res.CreateDate, res.ExpDate, res.Ns1, res.Ns2, res.Ns3, res.Ns4, res.DomainStatus)
 		case "renewdomainfromfile":
 			result := domainAction.RenewDomainListFromPath(*domainFileFlag, period, conf)
 			for _, res := range result {
