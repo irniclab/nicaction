@@ -1,7 +1,9 @@
 package domainAction
 
 import (
+	"io/ioutil"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/irniclab/nicaction/types"
@@ -119,4 +121,23 @@ func subtractDays(t time.Time) int {
 	t = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location()).AddDate(0, 0, 60)
 	diff := t.Sub(today)
 	return int(diff.Hours() / 24)
+}
+
+func readDomainListFromFile(filePath string) ([]string, error) {
+	fileContent, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+	lines := strings.Split(string(fileContent), "\n")
+	return lines, nil
+}
+
+func writeDomainListToFile(filePath string, domainList []string) error {
+	outputContent := strings.Join(domainList, "\n")
+	err := ioutil.WriteFile(filePath, []byte(outputContent), 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
