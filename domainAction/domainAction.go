@@ -1,6 +1,7 @@
 package domainAction
 
 import (
+	"errors"
 	"io/ioutil"
 	"log"
 	"strings"
@@ -37,6 +38,9 @@ func RenewDomainWithError(domain string, period int, conf types.Config) (bool, e
 	//log.Printf("Exp Date is : " + dt.ExpDate.String())
 	if error != nil {
 		return false, error
+	}
+	if hasPendingRenewStatus(dt) {
+		return false, errors.New("DomainPendingRenew")
 	}
 	reqStr := xmlRequest.DomainRenewXml(domain, xmlRequest.FormatDateString(dt.ExpDate), period*12, conf)
 	resp, error := xmlRequest.SendXml(reqStr, conf)
@@ -85,6 +89,7 @@ func RenewDomainList(domainList []string, period int, conf types.Config) []types
 
 func RenewDomainListFromPath(filePath string, period int, conf types.Config) []types.DomainListResult {
 	var domainRenewResults []types.DomainListResult
+	var domainPendingRenew []string
 	domainList, error := readDomainListFromFile(filePath)
 	if error != nil {
 		log.Fatalf("Error in reading files %s", error.Error())
@@ -100,6 +105,9 @@ func RenewDomainListFromPath(filePath string, period int, conf types.Config) []t
 					ErrorMsg: error.Error(),
 				}
 				domainRenewResults = append(domainRenewResults, result)
+				if error.Error() == "DomainPendingRenew" {
+					domainPendingRenew = append(domainPendingRenew, dm)
+				}
 			} else if !res {
 				result := types.DomainListResult{
 					Domain:   dm,
@@ -122,6 +130,7 @@ func RenewDomainListFromPath(filePath string, period int, conf types.Config) []t
 	}
 	successList := getSuccessListFromListResult(domainRenewResults)
 	remainList := FilterSlice(domainList, successList)
+	remainList = FilterSlice(remainList, domainPendingRenew)
 	writeDomainListToFile(filePath, remainList)
 	return domainRenewResults
 }
@@ -226,4 +235,13 @@ func FixIrDomainName(domain string) string {
 		domain = domain + ".ir"
 	}
 	return domain
+}
+
+func hasPendingRenewStatus(domain types.DomainType) bool {
+	for _, status := range domain.DomainStatus {
+		if status == "pendingRenew" {
+			return true
+		}
+	}
+	return false
 }
