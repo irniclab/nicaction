@@ -50,12 +50,12 @@ func RenewDomainWithError(domain string, period int, conf types.Config) (bool, e
 	return result, nil
 }
 
-func RenewDomainList(domainList []string, period int, conf types.Config) []types.DomainRenewResult {
-	var domainRenewResults []types.DomainRenewResult
+func RenewDomainList(domainList []string, period int, conf types.Config) []types.DomainListResult {
+	var domainRenewResults []types.DomainListResult
 	for _, dm := range domainList {
 		res, error := RenewDomainWithError(dm, period, conf)
 		if error != nil {
-			result := types.DomainRenewResult{
+			result := types.DomainListResult{
 				Domain:   dm,
 				Duration: period,
 				Result:   false,
@@ -63,7 +63,7 @@ func RenewDomainList(domainList []string, period int, conf types.Config) []types
 			}
 			domainRenewResults = append(domainRenewResults, result)
 		} else if !res {
-			result := types.DomainRenewResult{
+			result := types.DomainListResult{
 				Domain:   dm,
 				Duration: period,
 				Result:   false,
@@ -71,7 +71,7 @@ func RenewDomainList(domainList []string, period int, conf types.Config) []types
 			}
 			domainRenewResults = append(domainRenewResults, result)
 		} else {
-			result := types.DomainRenewResult{
+			result := types.DomainListResult{
 				Domain:   dm,
 				Duration: period,
 				Result:   true,
@@ -140,4 +140,33 @@ func writeDomainListToFile(filePath string, domainList []string) error {
 	}
 
 	return nil
+}
+
+func containsString(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+	return false
+}
+
+func getSuccessListFromListResult(dominwResultList []types.DomainListResult) []string {
+	result := []string{}
+	for _, dr := range dominwResultList {
+		if dr.Result {
+			result = append(result, dr.Domain)
+		}
+	}
+	return result
+}
+
+func FilterSlice(s1 []string, s2 []string) []string {
+	result := []string{}
+	for _, str := range s1 {
+		if !containsString(s2, str) {
+			result = append(result, str)
+		}
+	}
+	return result
 }

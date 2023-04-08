@@ -21,7 +21,7 @@ type DomainType struct {
 	DomainStatus []string
 }
 
-type DomainRenewResult struct {
+type DomainListResult struct {
 	Domain   string
 	Duration int
 	Result   bool
