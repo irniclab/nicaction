@@ -166,7 +166,7 @@ func main() {
 			}
 			log.Printf("Domain: %s\nHolder: %s\nCreationDate: %s\nExpDate: %s\nns1: %s\n,ns2: %s\nns3: %s\nns4: %s\n ", res.Domain, res.Holder, res.CreateDate, res.ExpDate, res.Ns1, res.Ns2, res.Ns3, res.Ns4)
 		case "renew":
-			result, err := domainAction.RenewDomain(domain, period*12, conf)
+			result, err := domainAction.RenewDomain(domain, period, conf)
 			if err != nil {
 				log.Fatalf("Error is : %s", err.Error())
 			}

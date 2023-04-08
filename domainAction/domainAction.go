@@ -18,7 +18,7 @@ func RenewDomain(domain string, period int, conf types.Config) (bool, error) {
 	if error != nil {
 		log.Fatalf("Error in domain whois %s", error.Error())
 	}
-	reqStr := xmlRequest.DomainRenewXml(domain, xmlRequest.FormatDateString(dt.ExpDate), period, conf)
+	reqStr := xmlRequest.DomainRenewXml(domain, xmlRequest.FormatDateString(dt.ExpDate), period*12, conf)
 	resp, error := xmlRequest.SendXml(reqStr, conf)
 	if error != nil {
 		log.Fatalf("Error in renew domain from nic %s", error.Error())
@@ -28,6 +28,57 @@ func RenewDomain(domain string, period int, conf types.Config) (bool, error) {
 		log.Fatalf("Error in renew domain from nic %s", error.Error())
 	}
 	return result, nil
+}
+
+func RenewDomainWithError(domain string, period int, conf types.Config) (bool, error) {
+	dt, error := Whois(domain, conf)
+	//log.Printf("Exp Date is : " + dt.ExpDate.String())
+	if error != nil {
+		return false, error
+	}
+	reqStr := xmlRequest.DomainRenewXml(domain, xmlRequest.FormatDateString(dt.ExpDate), period*12, conf)
+	resp, error := xmlRequest.SendXml(reqStr, conf)
+	if error != nil {
+		return false, error
+	}
+	result, error := xmlRequest.ParseDomainRenewResponse(resp)
+	if error != nil {
+		return false, error
+	}
+	return result, nil
+}
+
+func RenewDomainList(domainList []string, period int, conf types.Config) []types.DomainRenewResult {
+	var domainRenewResults []types.DomainRenewResult
+	for _, dm := range domainList {
+		res, error := RenewDomainWithError(dm, period, conf)
+		if error != nil {
+			result := types.DomainRenewResult{
+				Domain:   dm,
+				Duration: period,
+				Result:   false,
+				ErrorMsg: error.Error(),
+			}
+			domainRenewResults = append(domainRenewResults, result)
+		} else if !res {
+			result := types.DomainRenewResult{
+				Domain:   dm,
+				Duration: period,
+				Result:   false,
+				ErrorMsg: "Unknown Error.",
+			}
+			domainRenewResults = append(domainRenewResults, result)
+		} else {
+			result := types.DomainRenewResult{
+				Domain:   dm,
+				Duration: period,
+				Result:   true,
+				ErrorMsg: "",
+			}
+			domainRenewResults = append(domainRenewResults, result)
+		}
+	}
+	return domainRenewResults
 }
 
 func Whois(domain string, conf types.Config) (types.DomainType, error) {

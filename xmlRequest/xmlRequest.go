@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"time"
@@ -189,6 +190,7 @@ func ParseDomainRenewResponse(xmlContent string) (bool, error) {
 	} else if di.Result.Code == "2400" {
 		return false, errors.New("Command failed")
 	} else {
+		log.Printf("Result is %s", xmlContent)
 		return false, errors.New("An unknown error has occurred")
 	}
 }

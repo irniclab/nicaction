@@ -21,6 +21,13 @@ type DomainType struct {
 	DomainStatus []string
 }
 
+type DomainRenewResult struct {
+	Domain   string
+	Duration int
+	Result   bool
+	ErrorMsg string
+}
+
 // Config ساختار تنظیمات نیک
 type Config struct {
 	EppAddress    string `json:"eppAddress"`
