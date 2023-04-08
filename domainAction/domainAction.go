@@ -19,6 +19,7 @@ func RenewDomain(domain string, period int, conf types.Config) (bool, error) {
 		log.Fatalf("Error in domain whois %s", error.Error())
 	}
 	reqStr := xmlRequest.DomainRenewXml(domain, xmlRequest.FormatDateString(dt.ExpDate), period*12, conf)
+	log.Printf("Request is : %s", reqStr)
 	resp, error := xmlRequest.SendXml(reqStr, conf)
 	if error != nil {
 		log.Fatalf("Error in renew domain from nic %s", error.Error())
