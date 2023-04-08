@@ -83,6 +83,46 @@ func RenewDomainList(domainList []string, period int, conf types.Config) []types
 	return domainRenewResults
 }
 
+func RenewDomainListFromPath(filePath string, period int, conf types.Config) []types.DomainListResult {
+	var domainRenewResults []types.DomainListResult
+	domainList, error := readDomainListFromFile(filePath)
+	if error != nil {
+		log.Fatalf("Error in reading files %s", error.Error())
+	}
+	for _, dm := range domainList {
+		res, error := RenewDomainWithError(dm, period, conf)
+		if error != nil {
+			result := types.DomainListResult{
+				Domain:   dm,
+				Duration: period,
+				Result:   false,
+				ErrorMsg: error.Error(),
+			}
+			domainRenewResults = append(domainRenewResults, result)
+		} else if !res {
+			result := types.DomainListResult{
+				Domain:   dm,
+				Duration: period,
+				Result:   false,
+				ErrorMsg: "Unknown Error.",
+			}
+			domainRenewResults = append(domainRenewResults, result)
+		} else {
+			result := types.DomainListResult{
+				Domain:   dm,
+				Duration: period,
+				Result:   true,
+				ErrorMsg: "",
+			}
+			domainRenewResults = append(domainRenewResults, result)
+		}
+	}
+	successList := getSuccessListFromListResult(domainRenewResults)
+	remainList := FilterSlice(domainList, successList)
+	writeDomainListToFile(filePath, remainList)
+	return domainRenewResults
+}
+
 func Whois(domain string, conf types.Config) (types.DomainType, error) {
 	var result *types.DomainType
 	reqStr := xmlRequest.DomainWhoisXml(domain, conf)
