@@ -21,6 +21,9 @@ func RenewDomain(domain string, period int, conf types.Config) (bool, error) {
 	if error != nil {
 		log.Fatalf("Error in domain whois %s", error.Error())
 	}
+	if hasPendingRenewStatus(dt) {
+		return false, errors.New("DomainPendingRenew")
+	}
 	reqStr := xmlRequest.DomainRenewXml(domain, xmlRequest.FormatDateString(dt.ExpDate), period*12, conf)
 	resp, error := xmlRequest.SendXml(reqStr, conf)
 	if error != nil {
@@ -244,4 +247,21 @@ func hasPendingRenewStatus(domain types.DomainType) bool {
 		}
 	}
 	return false
+}
+
+func getNsArray(config types.DomainType) []string {
+	result := []string{}
+	if strings.TrimSpace(config.Ns1) != "" {
+		result = append(result, config.Ns1)
+	}
+	if strings.TrimSpace(config.Ns2) != "" {
+		result = append(result, config.Ns2)
+	}
+	if strings.TrimSpace(config.Ns3) != "" {
+		result = append(result, config.Ns3)
+	}
+	if strings.TrimSpace(config.Ns4) != "" {
+		result = append(result, config.Ns4)
+	}
+	return result
 }

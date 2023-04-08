@@ -36,6 +36,8 @@ type Config struct {
 	AuthCode          string `json:"authCode"`
 	Ns1               string `json:"ns1"`
 	Ns2               string `json:"ns2"`
+	Ns3               string `json:"ns3"`
+	Ns4               string `json:"ns4"`
 	PreClTRID         string `json:"preClTRID"`
 	MainNicHandle     string `json:"mainNicHandle"`
 	ResellerNicHandle string `json:"resellerNicHandle"`

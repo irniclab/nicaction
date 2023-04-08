@@ -14,6 +14,9 @@ import (
 
 var period int = 0
 var nicHandle = ""
+var adminHandle = ""
+var techHandle = ""
+var billHandle = ""
 
 func main() {
 	flag.Usage = func() {
@@ -23,14 +26,17 @@ func main() {
 	}
 
 	var (
-		actionFlag     = flag.String("action", "", "the action to perform")
-		domainFlag     = flag.String("domain", "", "the domain to perform")
-		periodFlag     = flag.Int("period", 0, "the period of the domain (required for 'register' action)")
-		nicHandleFlag  = flag.String("nichandle", "", "the nicHandle for the domain (required for 'register' action)")
-		configFile     = flag.String("config", "", "path to config file")
-		configFlag     = flag.String("configFile", "", "path to config file")
-		domainFileFlag = flag.String("domainfile", "", "path to domain file")
-		showConfig     = flag.String("showConfig", "", "Show config")
+		actionFlag      = flag.String("action", "", "the action to perform")
+		domainFlag      = flag.String("domain", "", "the domain to perform")
+		periodFlag      = flag.Int("period", 0, "the period of the domain (required for 'register' action)")
+		nicHandleFlag   = flag.String("nichandle", "", "the nicHandle for the domain (required for 'register' action)")
+		configFile      = flag.String("config", "", "path to config file")
+		configFlag      = flag.String("configFile", "", "path to config file")
+		domainFileFlag  = flag.String("domainfile", "", "path to domain file")
+		showConfig      = flag.String("showConfig", "", "Show config")
+		adminHandleFlag = flag.String("adminHandle", "", "the admin nicHandle for the domain (required for 'register' action)")
+		techHandleFlag  = flag.String("techHandle", "", "the tech nicHandle for the domain (required for 'register' action)")
+		billHandleFlag  = flag.String("billHandle", "", "the bill nicHandle for the domain (required for 'register' action)")
 	)
 
 	flag.Parse()
@@ -90,6 +96,21 @@ func main() {
 		nicHandle = *nicHandleFlag
 	} else {
 		nicHandle = conf.Nichandle
+	}
+	if *adminHandleFlag != "" {
+		adminHandle = *adminHandleFlag
+	} else {
+		adminHandle = nicHandle
+	}
+	if *techHandleFlag != "" {
+		techHandle = *techHandleFlag
+	} else {
+		techHandle = nicHandle
+	}
+	if *billHandleFlag != "" {
+		billHandle = *billHandleFlag
+	} else {
+		billHandle = conf.MainNicHandle
 	}
 	domain := *domainFlag
 
