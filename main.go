@@ -29,7 +29,7 @@ func main() {
 		nicHandleFlag  = flag.String("nichandle", "", "the nicHandle for the domain (required for 'register' action)")
 		configFile     = flag.String("config", "", "path to config file")
 		configFlag     = flag.String("configFile", "", "path to config file")
-		domainFileFlag = flag.String("domainile", "", "path to config file")
+		domainFileFlag = flag.String("domainfile", "", "path to domain file")
 		showConfig     = flag.String("showConfig", "", "Show config")
 	)
 
