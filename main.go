@@ -101,6 +101,9 @@ func main() {
 		}
 		fmt.Printf("Current eppAddress: %s\n", conf.EppAddress)
 		fmt.Printf("Current nichandle: %s\n", conf.Nichandle)
+		fmt.Printf("Current mainNicHandle: %s\n", conf.MainNicHandle)
+		fmt.Printf("Current resellerNicHandle: %s\n", conf.ResellerNicHandle)
+		fmt.Printf("Current nichandle: %s\n", conf.Nichandle)
 		fmt.Printf("Current token: %s\n", conf.Token)
 		fmt.Printf("Current ns1: %s\n", conf.Ns1)
 		fmt.Printf("Current ns2: %s\n", conf.Ns2)
@@ -119,6 +122,14 @@ func main() {
 		newValue = readInput(fmt.Sprintf("Enter new nichandle (%s): ", conf.Nichandle))
 		if newValue != "" {
 			conf.Nichandle = newValue
+		}
+		newValue = readInput(fmt.Sprintf("Enter new mainNicHandle (%s): ", conf.MainNicHandle))
+		if newValue != "" {
+			conf.MainNicHandle = newValue
+		}
+		newValue = readInput(fmt.Sprintf("Enter new resellerNicHandle (%s): ", conf.ResellerNicHandle))
+		if newValue != "" {
+			conf.ResellerNicHandle = newValue
 		}
 		newValue = readInput(fmt.Sprintf("Enter new token (%s): ", conf.Token))
 		if newValue != "" {

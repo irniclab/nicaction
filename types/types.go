@@ -30,14 +30,16 @@ type DomainListResult struct {
 
 // Config ساختار تنظیمات نیک
 type Config struct {
-	EppAddress    string `json:"eppAddress"`
-	Nichandle     string `json:"nichandle"`
-	Token         string `json:"token"`
-	AuthCode      string `json:"authCode"`
-	Ns1           string `json:"ns1"`
-	Ns2           string `json:"ns2"`
-	PreClTRID     string `json:"preClTRID"`
-	DefaultPeriod int    `json:"defaultPeriod"`
+	EppAddress        string `json:"eppAddress"`
+	Nichandle         string `json:"nichandle"`
+	Token             string `json:"token"`
+	AuthCode          string `json:"authCode"`
+	Ns1               string `json:"ns1"`
+	Ns2               string `json:"ns2"`
+	PreClTRID         string `json:"preClTRID"`
+	MainNicHandle     string `json:"mainNicHandle"`
+	ResellerNicHandle string `json:"resellerNicHandle"`
+	DefaultPeriod     int    `json:"defaultPeriod"`
 }
 
 func ConvertDomainTypeToJSONByte(dt DomainType) ([]byte, error) {
