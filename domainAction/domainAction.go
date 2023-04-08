@@ -90,32 +90,35 @@ func RenewDomainListFromPath(filePath string, period int, conf types.Config) []t
 		log.Fatalf("Error in reading files %s", error.Error())
 	}
 	for _, dm := range domainList {
-		res, error := RenewDomainWithError(FixIrDomainName(dm), period, conf)
-		if error != nil {
-			result := types.DomainListResult{
-				Domain:   dm,
-				Duration: period,
-				Result:   false,
-				ErrorMsg: error.Error(),
+		if dm != "" && len(dm) >= 3 {
+			res, error := RenewDomainWithError(FixIrDomainName(dm), period, conf)
+			if error != nil {
+				result := types.DomainListResult{
+					Domain:   dm,
+					Duration: period,
+					Result:   false,
+					ErrorMsg: error.Error(),
+				}
+				domainRenewResults = append(domainRenewResults, result)
+			} else if !res {
+				result := types.DomainListResult{
+					Domain:   dm,
+					Duration: period,
+					Result:   false,
+					ErrorMsg: "Unknown Error.",
+				}
+				domainRenewResults = append(domainRenewResults, result)
+			} else {
+				result := types.DomainListResult{
+					Domain:   dm,
+					Duration: period,
+					Result:   true,
+					ErrorMsg: "",
+				}
+				domainRenewResults = append(domainRenewResults, result)
 			}
-			domainRenewResults = append(domainRenewResults, result)
-		} else if !res {
-			result := types.DomainListResult{
-				Domain:   dm,
-				Duration: period,
-				Result:   false,
-				ErrorMsg: "Unknown Error.",
-			}
-			domainRenewResults = append(domainRenewResults, result)
-		} else {
-			result := types.DomainListResult{
-				Domain:   dm,
-				Duration: period,
-				Result:   true,
-				ErrorMsg: "",
-			}
-			domainRenewResults = append(domainRenewResults, result)
 		}
+
 	}
 	successList := getSuccessListFromListResult(domainRenewResults)
 	remainList := FilterSlice(domainList, successList)
@@ -169,7 +172,13 @@ func readDomainListFromFile(filePath string) ([]string, error) {
 		return nil, err
 	}
 	lines := strings.Split(string(fileContent), "\n")
-	return lines, nil
+	var validLines []string
+	for _, line := range lines {
+		if line != "" && len(line) >= 3 {
+			validLines = append(validLines, line)
+		}
+	}
+	return validLines, nil
 }
 
 func writeDomainListToFile(filePath string, domainList []string) error {
