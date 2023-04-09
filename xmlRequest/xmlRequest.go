@@ -67,7 +67,7 @@ func CreateDomainRequest(domain string, period int, holder string, adminHandle s
 	xmlReq += `  </command>`
 	xmlReq += `</epp>`
 
-	return xmlReq, nil
+	return xmlReq
 }
 
 func DomainRenewXml(domain string, expDate string, period int, config types.Config) string {
