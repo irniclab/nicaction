@@ -134,10 +134,15 @@ func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 		return nil, errors.New("Session limit exceeded; server closing connection")
 	}
 	//log.Printf("di.Response.ResData.InfData.ExDate : %s", di.Response.ResData.InfData.ExDate)
-
+	var holder = ""
+	for _, contact := range di.Response.ResData.InfData.Contacts {
+		if contact.Type == "holder" {
+			holder = contact.Value
+		}
+	}
 	d := &types.DomainType{
 		Domain:       di.Response.ResData.InfData.Name,
-		Holder:       di.Response.ResData.InfData.Holder,
+		Holder:       holder,
 		DomainStatus: make([]string, len(di.Response.ResData.InfData.Statuses)),
 		Ns1:          "",
 		Ns2:          "",
@@ -245,3 +250,5 @@ func convertToJalali(t time.Time) (ptime.Time, error) {
 	pt := ptime.New(t)
 	return pt, nil
 }
+
+func getContactValue()
