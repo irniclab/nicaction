@@ -250,5 +250,3 @@ func convertToJalali(t time.Time) (ptime.Time, error) {
 	pt := ptime.New(t)
 	return pt, nil
 }
-
-func getContactValue()
