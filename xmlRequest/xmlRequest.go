@@ -98,7 +98,7 @@ func getPreClTRID(config types.Config) string {
 }
 
 func SendXml(xml string, config types.Config) (string, error) {
-	//log.Printf("Raw Result is : %s", xml)
+	log.Printf("Raw Result is : %s", xml)
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", config.EppAddress, bytes.NewBufferString(xml))
 	if err != nil {
