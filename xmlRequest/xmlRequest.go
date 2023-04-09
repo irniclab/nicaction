@@ -36,7 +36,7 @@ func DomainWhoisXml(domain string, config types.Config) string {
 	return fmt.Sprintf(xml, domain, config.AuthCode, getPreClTRID(config))
 }
 
-func CreateDomainRequest(domain string, period int, holder string, ns []string, config types.Config) (string, error) {
+func CreateDomainRequest(domain string, period int, holder string, adminHandle string, techHandle string, billHandle string, ns []string, config types.Config) string {
 	// Build the XML request
 	var xmlReq string
 	xmlReq += `<?xml version="1.0" encoding="UTF-8" standalone="no"?>`
@@ -54,9 +54,9 @@ func CreateDomainRequest(domain string, period int, holder string, ns []string, 
 	}
 	xmlReq += `        </domain:ns>`
 	xmlReq += `        <domain:contact type="holder">` + holder + `</domain:contact>`
-	xmlReq += `        <domain:contact type="admin">` + holder + `</domain:contact>`
-	xmlReq += `        <domain:contact type="tech">` + holder + `</domain:contact>`
-	xmlReq += `        <domain:contact type="bill">` + config.MainNicHandle + `</domain:contact>`
+	xmlReq += `        <domain:contact type="admin">` + adminHandle + `</domain:contact>`
+	xmlReq += `        <domain:contact type="tech">` + techHandle + `</domain:contact>`
+	xmlReq += `        <domain:contact type="bill">` + billHandle + `</domain:contact>`
 	xmlReq += `        <domain:agreement>true</domain:agreement>`
 	xmlReq += `        <domain:authInfo>`
 	xmlReq += `          <domain:pw>` + config.AuthCode + `</domain:pw>`
@@ -185,12 +185,15 @@ func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	return d, nil
 }
 
-func ParseDomainRenewResponse(xmlContent string) (bool, error) {
+func ParseDomainResponse(xmlContent string) (bool, error) {
 	var di nicResponse.GeneralResponse
 	if err := xml.Unmarshal([]byte(xmlContent), &di); err != nil {
 		return false, err
 	}
 
+	if di.Result.Code == "1000" {
+		return true, nil
+	}
 	if di.Result.Code == "1001" {
 		return true, nil
 	}

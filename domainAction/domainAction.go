@@ -11,8 +11,18 @@ import (
 	"github.com/irniclab/nicaction/xmlRequest"
 )
 
-func registerDomain(domain string, nicHanle string, period int, ns1 string, ns2 string, preclTRID string, token string) (bool, error) {
-	return true, nil
+func RegisterDomain(domain string, period int, holder string, adminHandle string, techHandle string, billHandle string, ns1 string, ns2 string, ns3 string, ns4 string, conf types.Config) (bool, error) {
+	nsArray := getNsArray(ns1, ns2, ns3, ns4)
+	reqStr := xmlRequest.CreateDomainRequest(domain, period*12, holder, adminHandle, techHandle, billHandle, nsArray, conf)
+	resp, error := xmlRequest.SendXml(reqStr, conf)
+	if error != nil {
+		log.Fatalf("Error in register domain from nic %s", error.Error())
+	}
+	result, error := xmlRequest.ParseDomainResponse(resp)
+	if error != nil {
+		log.Fatalf("Error in register domain from nic %s", error.Error())
+	}
+	return result, nil
 }
 
 func RenewDomain(domain string, period int, conf types.Config) (bool, error) {
@@ -29,7 +39,7 @@ func RenewDomain(domain string, period int, conf types.Config) (bool, error) {
 	if error != nil {
 		log.Fatalf("Error in renew domain from nic %s", error.Error())
 	}
-	result, error := xmlRequest.ParseDomainRenewResponse(resp)
+	result, error := xmlRequest.ParseDomainResponse(resp)
 	if error != nil {
 		log.Fatalf("Error in renew domain from nic %s", error.Error())
 	}
@@ -50,7 +60,7 @@ func RenewDomainWithError(domain string, period int, conf types.Config) (bool, e
 	if error != nil {
 		return false, error
 	}
-	result, error := xmlRequest.ParseDomainRenewResponse(resp)
+	result, error := xmlRequest.ParseDomainResponse(resp)
 	if error != nil {
 		return false, error
 	}
@@ -249,7 +259,7 @@ func hasPendingRenewStatus(domain types.DomainType) bool {
 	return false
 }
 
-func getNsArray(config types.DomainType) []string {
+func getNsArrayFromConfig(config types.DomainType) []string {
 	result := []string{}
 	if strings.TrimSpace(config.Ns1) != "" {
 		result = append(result, config.Ns1)
@@ -262,6 +272,23 @@ func getNsArray(config types.DomainType) []string {
 	}
 	if strings.TrimSpace(config.Ns4) != "" {
 		result = append(result, config.Ns4)
+	}
+	return result
+}
+
+func getNsArray(ns1 string, ns2 string, ns3 string, ns4 string) []string {
+	result := []string{}
+	if strings.TrimSpace(ns1) != "" {
+		result = append(result, ns1)
+	}
+	if strings.TrimSpace(ns2) != "" {
+		result = append(result, ns2)
+	}
+	if strings.TrimSpace(ns3) != "" {
+		result = append(result, ns3)
+	}
+	if strings.TrimSpace(ns4) != "" {
+		result = append(result, ns4)
 	}
 	return result
 }

@@ -17,6 +17,10 @@ var nicHandle = ""
 var adminHandle = ""
 var techHandle = ""
 var billHandle = ""
+var ns1 = ""
+var ns2 = ""
+var ns3 = ""
+var ns4 = ""
 
 func main() {
 	flag.Usage = func() {
@@ -37,6 +41,10 @@ func main() {
 		adminHandleFlag = flag.String("adminHandle", "", "the admin nicHandle for the domain (required for 'register' action)")
 		techHandleFlag  = flag.String("techHandle", "", "the tech nicHandle for the domain (required for 'register' action)")
 		billHandleFlag  = flag.String("billHandle", "", "the bill nicHandle for the domain (required for 'register' action)")
+		ns1Flag         = flag.String("ns1", "", "ns1 for the domain (required for 'register' action)")
+		ns2Flag         = flag.String("ns2", "", "ns2 for the domain (required for 'register' action)")
+		ns3Flag         = flag.String("ns3", "", "ns3 for the domain (required for 'register' action)")
+		ns4Flag         = flag.String("ns4", "", "ns4 for the domain (required for 'register' action)")
 	)
 
 	flag.Parse()
@@ -112,6 +120,27 @@ func main() {
 	} else {
 		billHandle = conf.MainNicHandle
 	}
+
+	if *ns1Flag != "" {
+		ns1 = *ns1Flag
+	} else {
+		ns1 = conf.Ns1
+	}
+	if *ns2Flag != "" {
+		ns2 = *ns2Flag
+	} else {
+		ns2 = conf.Ns2
+	}
+	if *ns3Flag != "" {
+		ns3 = *ns3Flag
+	} else {
+		ns3 = conf.Ns3
+	}
+	if *ns4Flag != "" {
+		ns4 = *ns4Flag
+	} else {
+		ns4 = conf.Ns4
+	}
 	domain := *domainFlag
 
 	// نمایش مقادیر فعلی تنظیمات فقط در صورتی که --showConfig وارد شده باشد
@@ -128,6 +157,8 @@ func main() {
 		fmt.Printf("Current token: %s\n", conf.Token)
 		fmt.Printf("Current ns1: %s\n", conf.Ns1)
 		fmt.Printf("Current ns2: %s\n", conf.Ns2)
+		fmt.Printf("Current ns3: %s\n", conf.Ns3)
+		fmt.Printf("Current ns4: %s\n", conf.Ns4)
 		fmt.Printf("Current pre-clTRID: %s\n", conf.PreClTRID)
 		fmt.Printf("Current defaultPeriod: %d\n", conf.DefaultPeriod)
 		return
@@ -167,6 +198,14 @@ func main() {
 		newValue = readInput(fmt.Sprintf("Enter new ns2 (%s): ", conf.Ns2))
 		if newValue != "" {
 			conf.Ns2 = newValue
+		}
+		newValue = readInput(fmt.Sprintf("Enter new ns3 (%s): ", conf.Ns3))
+		if newValue != "" {
+			conf.Ns3 = newValue
+		}
+		newValue = readInput(fmt.Sprintf("Enter new ns4 (%s): ", conf.Ns4))
+		if newValue != "" {
+			conf.Ns4 = newValue
 		}
 		newValue = readInput(fmt.Sprintf("Enter new pre-clTRID (%s): ", conf.PreClTRID))
 		if newValue != "" {
@@ -228,6 +267,31 @@ func main() {
 				}
 				if result {
 					log.Printf("The domain %s has been successfully renewed for %d years.", domain, period)
+				}
+			}
+		case "register":
+			if strings.Contains(domain, ",") {
+				// کاراکتر , در رشته وجود دارد
+				domainList := strings.Split(domain, ",")
+				for _, d := range domainList {
+					domain = domainAction.FixIrDomainName(d)
+					result, err := domainAction.RenewDomain(domain, period, conf)
+					if err != nil {
+						log.Fatalf("Error is : %s", err.Error())
+					}
+					if result {
+						log.Printf("The domain %s has been successfully renewed for %d years.", domain, period)
+					}
+				}
+			} else {
+				domain = domainAction.FixIrDomainName(domain)
+				// کاراکتر , در رشته وجود ندارد
+				result, err := domainAction.RegisterDomain(domain, period, nicHandle, adminHandle, techHandle, billHandle, ns1, ns2, ns3, ns4, conf)
+				if err != nil {
+					log.Fatalf("Error is : %s", err.Error())
+				}
+				if result {
+					log.Printf("The domain %s has been successfully registered for %d years.", domain, period)
 				}
 			}
 		case "DaysToRelease":
