@@ -275,12 +275,12 @@ func main() {
 				domainList := strings.Split(domain, ",")
 				for _, d := range domainList {
 					domain = domainAction.FixIrDomainName(d)
-					result, err := domainAction.RenewDomain(domain, period, conf)
+					result, err := domainAction.RegisterDomain(domain, period, nicHandle, adminHandle, techHandle, billHandle, ns1, ns2, ns3, ns4, conf)
 					if err != nil {
 						log.Fatalf("Error is : %s", err.Error())
 					}
 					if result {
-						log.Printf("The domain %s has been successfully renewed for %d years.", domain, period)
+						log.Printf("The domain %s has been successfully registered for %d years.", domain, period)
 					}
 				}
 			} else {
