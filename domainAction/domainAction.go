@@ -148,6 +148,103 @@ func RenewDomainListFromPath(filePath string, period int, conf types.Config) []t
 	return domainRenewResults
 }
 
+func RenewDomainListMultiThread(domainList []string, period int, conf types.Config) []types.DomainListResult {
+	var domainRenewResults []types.DomainListResult
+	results := make(chan types.DomainListResult, len(domainList))
+	for _, dm := range domainList {
+		go func(dm string) {
+			res, error := RenewDomainWithError(dm, period, conf)
+			if error != nil {
+				result := types.DomainListResult{
+					Domain:   dm,
+					Duration: period,
+					Result:   false,
+					ErrorMsg: error.Error(),
+				}
+				results <- result
+			} else if !res {
+				result := types.DomainListResult{
+					Domain:   dm,
+					Duration: period,
+					Result:   false,
+					ErrorMsg: "Unknown Error.",
+				}
+				results <- result
+			} else {
+				result := types.DomainListResult{
+					Domain:   dm,
+					Duration: period,
+					Result:   true,
+					ErrorMsg: "",
+				}
+				results <- result
+			}
+		}(dm)
+	}
+
+	for i := 0; i < len(domainList); i++ {
+		result := <-results
+		domainRenewResults = append(domainRenewResults, result)
+	}
+	return domainRenewResults
+}
+
+func RenewDomainListFromPathMultiThread(filePath string, period int, conf types.Config) []types.DomainListResult {
+	var domainRenewResults []types.DomainListResult
+	var domainPendingRenew []string
+
+	domainList, error := readDomainListFromFile(filePath)
+	if error != nil {
+		log.Fatalf("Error in reading files %s", error.Error())
+	}
+
+	results := make(chan types.DomainListResult, len(domainList))
+	for _, dm := range domainList {
+		if dm != "" && len(dm) >= 3 {
+			go func(dm string) {
+				res, err := RenewDomainWithError(FixIrDomainName(dm), period, conf)
+				if err != nil {
+					results <- types.DomainListResult{
+						Domain:   dm,
+						Duration: period,
+						Result:   false,
+						ErrorMsg: err.Error(),
+					}
+					if err.Error() == "DomainPendingRenew" {
+						domainPendingRenew = append(domainPendingRenew, dm)
+					}
+				} else if !res {
+					results <- types.DomainListResult{
+						Domain:   dm,
+						Duration: period,
+						Result:   false,
+						ErrorMsg: "Unknown Error.",
+					}
+				} else {
+					results <- types.DomainListResult{
+						Domain:   dm,
+						Duration: period,
+						Result:   true,
+						ErrorMsg: "",
+					}
+				}
+			}(dm)
+		}
+	}
+
+	for i := 0; i < len(domainList); i++ {
+		result := <-results
+		domainRenewResults = append(domainRenewResults, result)
+	}
+
+	successList := getSuccessListFromListResult(domainRenewResults)
+	remainList := FilterSlice(domainList, successList)
+	remainList = FilterSlice(remainList, domainPendingRenew)
+	writeDomainListToFile(filePath, remainList)
+
+	return domainRenewResults
+}
+
 func Whois(domain string, conf types.Config) (types.DomainType, error) {
 	var result *types.DomainType
 	reqStr := xmlRequest.DomainWhoisXml(domain, conf)
