@@ -247,18 +247,30 @@ func RenewDomainListFromPathMultiThread(filePath string, period int, conf types.
 
 func Whois(domain string, conf types.Config) (types.DomainType, error) {
 	var result *types.DomainType
+	var err error
 	reqStr := xmlRequest.DomainWhoisXml(domain, conf)
-	//log.Print(reqStr)
-	resStr, error := xmlRequest.SendXml(reqStr, conf)
-	if error != nil {
-		log.Fatalf("Error in Whois from nic %s", error.Error())
+
+	for {
+		resStr, err := xmlRequest.SendXml(reqStr, conf)
+		if err != nil {
+			if strings.Contains(err.Error(), "net/http: HTTP/1.x transport connection broken: malformed HTTP status code \"20018\"") {
+				time.Sleep(5 * time.Second)
+				continue
+			} else {
+				log.Fatalf("Error in Whois from nic %s", err.Error())
+			}
+		}
+		result, err = xmlRequest.ParseDomainInfoType(resStr)
+		if err == nil {
+			break
+		}
 	}
-	result, error = xmlRequest.ParseDomainInfoType(resStr)
-	if error != nil {
-		log.Fatalf("Error in Fetch result of Whois from nic %s", error.Error())
+
+	if err != nil {
+		log.Fatalf("Error in Fetch result of Whois from nic %s", err.Error())
 	}
-	//fmt.Print("Whois domain : " + domain)
-	return *result, error
+
+	return *result, err
 }
 
 func DayToRelease(domain string, conf types.Config) (int, error) {
