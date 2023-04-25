@@ -264,6 +264,7 @@ func Whois(domain string, conf types.Config) (types.DomainType, error) {
 			log.Fatalf("Domain %s is free", domain)
 			break
 		}
+		log.Printf("Raw Result is : %s", resStr)
 		result, err = xmlRequest.ParseDomainInfoType(resStr)
 		if err == nil {
 			break
