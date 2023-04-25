@@ -133,9 +133,6 @@ func ParseDomainInfoType(xmlContent string) (*types.DomainType, error) {
 	if di.Response.Result.Code == "2502" {
 		return nil, errors.New("Session limit exceeded; server closing connection")
 	}
-	if di.Response.Result.Code == "2303" {
-		return nil, errors.New("Domain does not exist")
-	}
 	//log.Printf("di.Response.ResData.InfData.ExDate : %s", di.Response.ResData.InfData.ExDate)
 	var holder = ""
 	for _, contact := range di.Response.ResData.InfData.Contacts {
