@@ -260,8 +260,9 @@ func Whois(domain string, conf types.Config) (types.DomainType, error) {
 				log.Fatalf("Error in Whois from nic %s", err.Error())
 			}
 		}
-
-		log.Printf("Raw Result is : %s", resStr)
+		if strings.Contains(resStr, "Object does not exist") {
+			log.Fatalf("Domain %s is free", domain)
+		}
 		result, err = xmlRequest.ParseDomainInfoType(resStr)
 		if err == nil {
 			break
