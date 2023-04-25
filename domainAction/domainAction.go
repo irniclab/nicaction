@@ -256,6 +256,8 @@ func Whois(domain string, conf types.Config) (types.DomainType, error) {
 			if strings.Contains(err.Error(), "net/http: HTTP/1.x transport connection broken: malformed HTTP status code \"20018\"") {
 				time.Sleep(5 * time.Second)
 				continue
+			} else if err.Error() == "Domain does not exist" {
+				log.Fatalf("Domain " + domain + "is free")
 			} else {
 				log.Fatalf("Error in Whois from nic %s", err.Error())
 			}
